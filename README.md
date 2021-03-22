@@ -31,7 +31,7 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
 `target_H` and `target_W` is the desired shape of the augmented images, `LQ_root` and `HQ_root` is the path of the lmdb dataset that was created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
 
 ![Data augmentation examples]
-(imgs/augmentation.png)
+(imgs/augmentation.jpg)
 
 ##### Testing data augmentation with ground-truth
 To be updated
@@ -46,7 +46,7 @@ To be updated
 To be updated
 
 ![Image deblurring examples]
-(imgs/ddeblurring.png)
+(imgs/deblurring.jpg)
 
 ### Checkpoints
 Pretrained models can be downloaded here.
