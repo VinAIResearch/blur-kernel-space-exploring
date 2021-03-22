@@ -16,8 +16,9 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
-  * [Quick usage](#Using-the-pretrained-model)
-* [Training and Evaluation](#Training-and-evaluation)
+  * [Using the pretrained model](#Using-the-pretrained-model)
+* [Training and evaluation](#Training-and-evaluation)
+* [Model Zoo](#Model-zoo)
 
 ## Getting started
 
@@ -49,6 +50,7 @@ conda install -y pytorch torchvision cudatoolkit=10.0 -c pytorch
 
 ``` diff
 - Please specify a very simple one-line command to use a pretrained model to deblur an image. You might need to specify how to download the pretrained model in the first place. Use the best generic model that you have. 
+- You might want to provide a sample input image and a sample output image. People can run this simple command to reproduce the output image and compare with the provided out to verify that they have installed your code successfully. 
 
 ```
 
@@ -93,13 +95,13 @@ To be updated
 
 ![Image deblurring examples](imgs/deblurring.jpg)
 
-### Checkpoints
+## Model Zoo
 Pretrained models can be downloaded here.
 
-## Important notes:
+
+## Notes and references
 The training code is borrowed from EDVR project: https://github.com/xinntao/EDVR
 
-## References
 [1] Lehtinen, Jaakko, et al. "Noise2noise: Learning image restoration without clean data." arXiv preprint arXiv:1803.04189 (2018). \
 [2] Krull, Alexander, Tim-Oliver Buchholz, and Florian Jug. "Noise2void-learning denoising from single noisy images." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2019. \
 [3] Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." arXiv preprint arXiv:1901.11365 (2019). \
