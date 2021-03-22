@@ -1,6 +1,8 @@
 # Exploring Image Deblurring via Encoded Blur Kernel Space
 This repository is the official pytorch implementation of the paper Exploring Image Deblurring via Encoded Blur Kernel Space.
 
+![Blur kernel space](imgs/teaser.jpg)
+
 ## Dependencies and Installation
 * Python >= 3.7
 * Pytorch >= 1.4.0
@@ -29,7 +31,7 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
 `target_H` and `target_W` is the desired shape of the augmented images, `LQ_root` and `HQ_root` is the path of the lmdb dataset that was created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
 
 ![Data augmentation examples]
-()
+(imgs/augmentation.png)
 
 ##### Testing data augmentation with ground-truth
 To be updated
@@ -44,7 +46,7 @@ To be updated
 To be updated
 
 ![Image deblurring examples]
-()
+(imgs/ddeblurring.png)
 
 ### Checkpoints
 Pretrained models can be downloaded here.
