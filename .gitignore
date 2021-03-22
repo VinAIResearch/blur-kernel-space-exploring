@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+*.png
+experiments/*
+results/*
