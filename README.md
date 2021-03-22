@@ -29,7 +29,28 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
 
 ### Installation
 
+``` sh
+git clone https://github.com/P0lyFish/blur-kernel-space-exploring.git
+cd blur-kernel-space-exploring
+
+conda create -n BlurKernelSpace -y python=3.7
+conda activate BlurKernelSpace
+conda install -y pytorch torchvision cudatoolkit=10.0 -c pytorch
+
+```
+
+``` diff
+- Please specify how to install the dependency libraries after installing pytorch line. 
+
+```
+
 ### Using the pretrained model
+
+
+``` diff
+- Please specify a very simple one-line command to use a pretrained model to deblur an image. You might need to specify how to download the pretrained model in the first place. Use the best generic model that you have. 
+
+```
 
 
 
@@ -82,7 +103,7 @@ The training code is borrowed from EDVR project: https://github.com/xinntao/EDVR
 [1] Lehtinen, Jaakko, et al. "Noise2noise: Learning image restoration without clean data." arXiv preprint arXiv:1803.04189 (2018). \
 [2] Krull, Alexander, Tim-Oliver Buchholz, and Florian Jug. "Noise2void-learning denoising from single noisy images." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2019. \
 [3] Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." arXiv preprint arXiv:1901.11365 (2019). \
-[4] Xie, Yaochen, Zhengyang Wang, and Shuiwang Ji. "Noise2Same: Optimizing A Self-Supervised Bound for Image Denoising." arXiv preprint arXiv:2010.11971 (2020). \
+[4] Xie, Yaochen, Zhengyang Wang, and Shuiwang Ji. "Noise2Same: Optimizing A Self-Supervised Bound for Image Denoising." arXiv preprint arXiv:2010.11971 (2020). 
 
 ## Citation
 
@@ -96,7 +117,7 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
   author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai}, \
   title = {Explore Image Deblurring via Encoded Blur Kernel Space}, \
   year = {2021}, \
-  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)},
+  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)} \
 }
 
 
