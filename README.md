@@ -6,7 +6,7 @@ This repository is the official pytorch implementation of the CVPR'21 paper:
 
 **Explore Image Deblurring via Encoded Blur Kernel Space.** \
 P. Tran, A. Tran, Q. Phung, M. Hoai (2021) \
-IEEE Conference on Computer Vision and Pattern Recognition (CVPR). \
+IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 
 
 ![Blur kernel space](imgs/teaser.jpg)
 
@@ -16,7 +16,8 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR). \
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
-  * [Usage](#Using-the-pretrained-model)
+  * [Quick usage](#Using-the-pretrained-model)
+* [Training and Evaluation](#Training-and-evaluation)
 
 ## Getting started
 
@@ -33,7 +34,7 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR). \
 
 
 
-## Usage
+## Training and evaluation
 ### Training
 You can train your own model using the following command:
 ```
@@ -83,18 +84,18 @@ The training code is borrowed from EDVR project: https://github.com/xinntao/EDVR
 [3] Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." arXiv preprint arXiv:1901.11365 (2019). \
 [4] Xie, Yaochen, Zhengyang Wang, and Shuiwang Ji. "Noise2Same: Optimizing A Self-Supervised Bound for Image Denoising." arXiv preprint arXiv:2010.11971 (2020). \
 
-## Citations
+## Citation
 
 If you find this code useful, please cite: 
 
 **Explore Image Deblurring via Encoded Blur Kernel Space.** \
 P. Tran, A. Tran, Q. Phung, M. Hoai (2021) \
-IEEE Conference on Computer Vision and Pattern Recognition (CVPR). \
+IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 
 
-@inproceedings{m_Tran-etal-CVPR21,
-  author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai},
-  title = {Explore Image Deblurring via Encoded Blur Kernel Space},
-  year = {2021},
+@inproceedings{m_Tran-etal-CVPR21, \
+  author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai}, \
+  title = {Explore Image Deblurring via Encoded Blur Kernel Space}, \
+  year = {2021}, \
   booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)},
 }
 
