@@ -36,25 +36,31 @@ cd blur-kernel-space-exploring
 
 conda create -n BlurKernelSpace -y python=3.7
 conda activate BlurKernelSpace
-conda install -y pytorch torchvision cudatoolkit=10.0 -c pytorch
+conda install --file requirements.txt
 
 ```
 
+<!--
 ``` diff
 - Please specify how to install the dependency libraries after installing pytorch line. 
 
 ```
+-->
 
 ### Using the pretrained model
 
 
+<!--
 ``` diff
 - Please specify a very simple one-line command to use a pretrained model to deblur an image. You might need to specify how to download the pretrained model in the first place. Use the best generic model that you have. 
 - You might want to provide a sample input image and a sample output image. People can run this simple command to reproduce the output image and compare with the provided out to verify that they have installed your code successfully. 
 
 ```
-
-
+-->
+To deblur an image using a pretrained model, use the following command:
+``` sh
+python deblur_image --model_path=experiments/pretrained/GOPRO_woVAE.pth --LQ_img=imgs/blur1.png
+```
 
 
 ## Training and evaluation
@@ -101,16 +107,13 @@ Pretrained models can be downloaded here.
 
 ## Notes and references
 The training code is borrowed from EDVR project: https://github.com/xinntao/EDVR
-
-[1] Lehtinen, Jaakko, et al. "Noise2noise: Learning image restoration without clean data." arXiv preprint arXiv:1803.04189 (2018). \
-[2] Krull, Alexander, Tim-Oliver Buchholz, and Florian Jug. "Noise2void-learning denoising from single noisy images." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2019. \
-[3] Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." arXiv preprint arXiv:1901.11365 (2019). \
-[4] Xie, Yaochen, Zhengyang Wang, and Shuiwang Ji. "Noise2Same: Optimizing A Self-Supervised Bound for Image Denoising." arXiv preprint arXiv:2010.11971 (2020). 
+The backbone code is borrowed from DeblurGAN project: https://github.com/KupynOrest/DeblurGAN
 
 ## Citation
 
 If you find this code useful, please cite: 
 
+```
 **Explore Image Deblurring via Encoded Blur Kernel Space.** \
 P. Tran, A. Tran, Q. Phung, M. Hoai (2021) \
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 
@@ -121,9 +124,4 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
   year = {2021}, \
   booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)} \
 }
-
-
-
-
-
-
+```
