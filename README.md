@@ -64,15 +64,24 @@ python deblur_image --model_path=experiments/pretrained/GOPRO_woVAE.pth --LQ_img
 
 
 ## Training and evaluation
+### Preparing datasets
+The REDS dataset can be downloaded [here](https://seungjunnah.github.io/Datasets/reds.html), or by executing `scripts/download_REDS.py`.
+
+The GOPRO dataset can be downloaded [here](https://seungjunnah.github.io/Datasets/gopro), or executing `scripts/download_GOPRO.py`.
+
+After downloading the datasets, you can use `scripts/create_lmdb.py` to generate lmdb dataset.
+
 ### Training
 You can train your own model using the following command:
+To train the model, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
 python train.py -opt path_to_yaml_file
 ```
+
 where `path_to_yaml_file` is the path to yaml file that contain training configurations. You can find some default configurations in `options` folder. Checkpoints and logs will be saved in `../experiments/modelName`
 
 ### Testing
-##### Data augmentation
+#### Data augmentation
 To augment a given dataset, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
 python test_data_augmentation.py --target_H=256 --target_W=256 \\
@@ -87,16 +96,16 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
 
 ![Data augmentation examples](imgs/augmentation.jpg)
 
-##### Testing data augmentation with ground-truth
+#### Testing data augmentation with ground-truth
 To be updated
 
-##### Generate novel blur kernels
+#### Generate novel blur kernels
 To be updated
 
 ![kernel generating examples]
 ()
 
-##### Image Deblurring
+#### Image Deblurring
 To be updated
 
 ![Image deblurring examples](imgs/deblurring.jpg)
