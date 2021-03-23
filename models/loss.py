@@ -23,11 +23,11 @@ class GANLoss(nn.Module):
         self.real_label_val = real_label_val
         self.fake_label_val = fake_label_val
 
-        if self.gan_type == 'gan' or self.gan_type == 'ragan':
+        if self.gan_type == "gan" or self.gan_type == "ragan":
             self.loss = nn.BCEWithLogitsLoss()
-        elif self.gan_type == 'lsgan':
+        elif self.gan_type == "lsgan":
             self.loss = nn.MSELoss()
-        elif self.gan_type == 'wgan-gp':
+        elif self.gan_type == "wgan-gp":
 
             def wgan_loss(input, target):
                 # target is boolean
@@ -35,10 +35,10 @@ class GANLoss(nn.Module):
 
             self.loss = wgan_loss
         else:
-            raise NotImplementedError('GAN type [{:s}] is not found'.format(self.gan_type))
+            raise NotImplementedError("GAN type [{:s}] is not found".format(self.gan_type))
 
     def get_target_label(self, input, target_is_real):
-        if self.gan_type == 'wgan-gp':
+        if self.gan_type == "wgan-gp":
             return target_is_real
         if target_is_real:
             return torch.empty_like(input).fill_(self.real_label_val)
@@ -52,9 +52,9 @@ class GANLoss(nn.Module):
 
 
 class GradientPenaltyLoss(nn.Module):
-    def __init__(self, device=torch.device('cpu')):
+    def __init__(self, device=torch.device("cpu")):
         super(GradientPenaltyLoss, self).__init__()
-        self.register_buffer('grad_outputs', torch.Tensor())
+        self.register_buffer("grad_outputs", torch.Tensor())
         self.grad_outputs = self.grad_outputs.to(device)
 
     def get_grad_outputs(self, input):
@@ -64,13 +64,18 @@ class GradientPenaltyLoss(nn.Module):
 
     def forward(self, interp, interp_crit):
         grad_outputs = self.get_grad_outputs(interp_crit)
-        grad_interp = torch.autograd.grad(outputs=interp_crit, inputs=interp,
-                                          grad_outputs=grad_outputs, create_graph=True,
-                                          retain_graph=True, only_inputs=True)[0]
+        grad_interp = torch.autograd.grad(
+            outputs=interp_crit,
+            inputs=interp,
+            grad_outputs=grad_outputs,
+            create_graph=True,
+            retain_graph=True,
+            only_inputs=True,
+        )[0]
         grad_interp = grad_interp.view(grad_interp.size(0), -1)
         grad_interp_norm = grad_interp.norm(2, dim=1)
 
-        loss = ((grad_interp_norm - 1)**2).mean()
+        loss = ((grad_interp_norm - 1) ** 2).mean()
         return loss
 
 
@@ -83,8 +88,8 @@ class SpatialGradientLoss(nn.Module):
     def diffMap(self, A, alongX):
         B, N, C, H = A.shape
         if alongX:
-            return A[:, :, 1:C, :] - A[:, :, 0:C-1, :]
-        return A[:, :, :, 1:H] - A[:, :, :, 0:H-1]
+            return A[:, :, 1:C, :] - A[:, :, 0 : C - 1, :]
+        return A[:, :, :, 1:H] - A[:, :, :, 0 : H - 1]
 
     def forward(self, A, B):
         Amap = self.diffMap(A, alongX=True)
@@ -101,6 +106,7 @@ class SpatialGradientLoss(nn.Module):
 
 class KLDivergence(nn.Module):
     """KL loss for VAE regularization"""
+
     def __init__(self):
         super(KLDivergence, self).__init__()
 
@@ -118,8 +124,7 @@ class KLDivergence(nn.Module):
                 print(var[i][i])
         var = var.clamp(min=1e-18) / N
 
-        kl = 0.5 * (-(var.log().trace()) + torch.trace(var)
-                    - N + mean.pow(2).sum())
+        kl = 0.5 * (-(var.log().trace()) + torch.trace(var) - N + mean.pow(2).sum())
 
         return kl
 

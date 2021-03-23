@@ -1,56 +1,38 @@
-import torch
-import lmdb
-import numpy as np
+import argparse
+import logging
 import os
 import random
-import options.options as options
-import logging
-import argparse
 
-from models.kernel_wizard import KernelWizard
-import utils.util as util
 import data.util as data_util
+import lmdb
+import numpy as np
+import options.options as options
+import torch
+import utils.util as util
+from models.kernel_wizard import KernelWizard
 
 
 def read_image(env, key, x, y, h, w):
     img = data_util.read_img(env, key, (3, 720, 1280))
-    img = np.transpose(img[x:x+h, y:y+w, [2, 1, 0]], (2, 0, 1))
+    img = np.transpose(img[x : x + h, y : y + w, [2, 1, 0]], (2, 0, 1))
     return img
 
 
 def main():
-    device = torch.device('cuda')
+    device = torch.device("cuda")
 
-    parser = argparse.ArgumentParser(description='Kernel extractor testing')
+    parser = argparse.ArgumentParser(description="Kernel extractor testing")
 
-    parser.add_argument('--source_H', action='store',
-                        help='source image height',
-                        type=int, default=None)
-    parser.add_argument('--source_W', action='store',
-                        help='source image width',
-                        type=int, default=None)
-    parser.add_argument('--target_H', action='store',
-                        help='target image height',
-                        type=int, default=None)
-    parser.add_argument('--target_W', action='store',
-                        help='target image width',
-                        type=int, default=None)
+    parser.add_argument("--source_H", action="store", help="source image height", type=int, default=None)
+    parser.add_argument("--source_W", action="store", help="source image width", type=int, default=None)
+    parser.add_argument("--target_H", action="store", help="target image height", type=int, default=None)
+    parser.add_argument("--target_W", action="store", help="target image width", type=int, default=None)
 
-    parser.add_argument('--model_path', action='store',
-                        help='model path',
-                        type=str, default=None)
-    parser.add_argument('--LQ_root', action='store',
-                        help='low-quality dataroot',
-                        type=str, default=None)
-    parser.add_argument('--HQ_root', action='store',
-                        help='high-quality dataroot',
-                        type=str, default=None)
-    parser.add_argument('--save_path', action='store',
-                        help='save path',
-                        type=str, default=None)
-    parser.add_argument('--yml_path', action='store',
-                        help='yml path',
-                        type=str, default=None)
+    parser.add_argument("--model_path", action="store", help="model path", type=str, default=None)
+    parser.add_argument("--LQ_root", action="store", help="low-quality dataroot", type=str, default=None)
+    parser.add_argument("--HQ_root", action="store", help="high-quality dataroot", type=str, default=None)
+    parser.add_argument("--save_path", action="store", help="save path", type=str, default=None)
+    parser.add_argument("--yml_path", action="store", help="yml path", type=str, default=None)
 
     args = parser.parse_args()
 
@@ -70,29 +52,26 @@ def main():
     # target_H, target_W = 256, 256
 
     # Initializing logger
-    logger = logging.getLogger('base')
+    logger = logging.getLogger("base")
     os.makedirs(save_path, exist_ok=True)
-    util.setup_logger('base', save_path, 'test', level=logging.INFO,
-                      screen=True, tofile=True)
-    logger.info('LQ root: {}'.format(LQ_root))
-    logger.info('HQ root: {}'.format(HQ_root))
-    logger.info('model path: {}'.format(model_path))
+    util.setup_logger("base", save_path, "test", level=logging.INFO, screen=True, tofile=True)
+    logger.info("LQ root: {}".format(LQ_root))
+    logger.info("HQ root: {}".format(HQ_root))
+    logger.info("model path: {}".format(model_path))
 
     # Initializing mode
-    logger.info('Loading model...')
-    opt = options.parse(yml_path)['KernelWizard']
+    logger.info("Loading model...")
+    opt = options.parse(yml_path)["KernelWizard"]
     model = KernelWizard(opt)
     model.eval()
     model.load_state_dict(torch.load(model_path))
     model = model.to(device)
-    logger.info('Done')
+    logger.info("Done")
 
     # processing data
-    HQ_env = lmdb.open(HQ_root, readonly=True, lock=False, readahead=False,
-                       meminit=False)
-    LQ_env = lmdb.open(LQ_root, readonly=True, lock=False, readahead=False,
-                       meminit=False)
-    paths_HQ, _ = data_util.get_image_paths('lmdb', HQ_root)
+    HQ_env = lmdb.open(HQ_root, readonly=True, lock=False, readahead=False, meminit=False)
+    LQ_env = lmdb.open(LQ_root, readonly=True, lock=False, readahead=False, meminit=False)
+    paths_HQ, _ = data_util.get_image_paths("lmdb", HQ_root)
     print(len(paths_HQ))
 
     psnr_avg = 0
@@ -121,10 +100,10 @@ def main():
 
         psnr = util.calculate_psnr(LQ_img, fake_LQ_img)
 
-        print('PSNR: {:.2f}db'.format(psnr))
+        print("PSNR: {:.2f}db".format(psnr))
         psnr_avg += psnr
 
-    print('Average PSNR: {:.2f}db'.format(psnr_avg / num_samples))
+    print("Average PSNR: {:.2f}db".format(psnr_avg / num_samples))
 
 
 main()
