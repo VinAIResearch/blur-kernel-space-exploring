@@ -25,22 +25,22 @@ def main():
 
     parser = argparse.ArgumentParser(description="Kernel extractor testing")
 
-    parser.add_argument("--source_H", action="store", help="source image height", type=int, default=None)
-    parser.add_argument("--source_W", action="store", help="source image width", type=int, default=None)
-    parser.add_argument("--target_H", action="store", help="target image height", type=int, default=None)
-    parser.add_argument("--target_W", action="store", help="target image width", type=int, default=None)
-    parser.add_arguement("--augmented_H", action="store", help="desired height of the augmented images",
-                         type=int, default=None)
-    parser.add_arguement("--augmented_W", action="store", help="desired width of the augmented images",
-                         type=int, default=None)
+    parser.add_argument("--source_H", action="store", help="source image height", type=int, required=True)
+    parser.add_argument("--source_W", action="store", help="source image width", type=int, required=True)
+    parser.add_argument("--target_H", action="store", help="target image height", type=int, required=True)
+    parser.add_argument("--target_W", action="store", help="target image width", type=int, required=True)
+    parser.add_argument("--augmented_H", action="store", help="desired height of the augmented images",
+                         type=int, required=True)
+    parser.add_argument("--augmented_W", action="store", help="desired width of the augmented images",
+                         type=int, required=True)
 
     parser.add_argument("--model_path", action="store", help="model path", type=str, default=None)
-    parser.add_argument("--source_LQ_root", action="store", help="source low-quality dataroot", type=str, default=None)
-    parser.add_argument("--source_HQ_root", action="store", help="source high-quality dataroot", type=str, default=None)
-    parser.add_argument("--target_HQ_root", action="store", help="target high-quality dataroot", type=str, default=None)
-    parser.add_argument("--save_path", action="store", help="save path", type=str, default=None)
-    parser.add_argument("--yml_path", action="store", help="yml path", type=str, default=None)
-    parser.add_argument("--num_images", action="store", help="number of desire augmented images", type=str, default=None)
+    parser.add_argument("--source_LQ_root", action="store", help="source low-quality dataroot", type=str, required=True)
+    parser.add_argument("--source_HQ_root", action="store", help="source high-quality dataroot", type=str, required=True)
+    parser.add_argument("--target_HQ_root", action="store", help="target high-quality dataroot", type=str, required=True)
+    parser.add_argument("--save_path", action="store", help="save path", type=str, required=True)
+    parser.add_argument("--yml_path", action="store", help="yml path", type=str, required=True)
+    parser.add_argument("--num_images", action="store", help="number of desire augmented images", type=int, required=True)
 
     args = parser.parse_args()
 
@@ -56,13 +56,6 @@ def main():
     yml_path = args.yml_path
     num_images = args.num_images
 
-    # model_path = '../experiments/GOPRO_wsharp_woVAE/models/300000_G.pth'
-    # LQ_root = '../datasets/GOPRO/train_blur_linear.lmdb'
-    # HQ_root = '../datasets/GOPRO/train_sharp.lmdb'
-    # save_path = '../results/GOPRO_wsharp_woVAE'
-    # source_H, source_W = 720, 1280
-    # target_H, target_W = 256, 256
-
     # Initializing logger
     logger = logging.getLogger("base")
     os.makedirs(save_path, exist_ok=True)
@@ -70,6 +63,9 @@ def main():
     logger.info("source LQ root: {}".format(source_LQ_root))
     logger.info("source HQ root: {}".format(source_HQ_root))
     logger.info("target HQ root: {}".format(target_HQ_root))
+    logger.info("augmented height: {}".format(augmented_H))
+    logger.info("augmented width: {}".format(augmented_W))
+    logger.info("Number of augmented images: {}".format(num_images))
     logger.info("model path: {}".format(model_path))
 
     # Initializing mode
@@ -118,11 +114,11 @@ def main():
         target_LQ_img = util.tensor2img(target_LQ)
         target_HQ_img = util.tensor2img(target_HQ)
 
-        target_HQ_dst = osp.join(save_path, "sharp/{:03d}/{:08d}.png")
-        target_LQ_dst = osp.join(save_path, "blur/{:03d}/{:08d}.png")
+        target_HQ_dst = osp.join(save_path, "sharp/{:03d}/{:08d}.png".format(i // 100, i % 100))
+        target_LQ_dst = osp.join(save_path, "blur/{:03d}/{:08d}.png".format(i // 100, i % 100))
 
-        os.makedirs(os.dirname(target_HQ_dst), exist_ok=True)
-        os.makedirs(os.dirname(target_LQ_dst), exist_ok=True)
+        os.makedirs(osp.dirname(target_HQ_dst), exist_ok=True)
+        os.makedirs(osp.dirname(target_LQ_dst), exist_ok=True)
 
         cv2.imwrite(target_HQ_dst, target_HQ_img)
         cv2.imwrite(target_LQ_dst, target_LQ_img)
