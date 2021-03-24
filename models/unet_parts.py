@@ -68,34 +68,34 @@ class UnetSkipConnectionBlock(nn.Module):
         upnorm = norm_layer(outer_nc)
 
         if outermost:
-            # upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
-            #                             kernel_size=4, stride=2,
-            #                             padding=1)
-            upsample = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
-            upconv = DoubleConv(inner_nc * 2, outer_nc)
-            up = [uprelu, upconv, upsample, nn.Tanh()]
+            upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
+                                        kernel_size=4, stride=2,
+                                        padding=1)
+            # upsample = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
+            # upconv = DoubleConv(inner_nc * 2, outer_nc)
+            up = [uprelu, upconv, nn.Tanh()]
             down = [downconv]
             self.down = nn.Sequential(*down)
             self.submodule = submodule
             self.up = nn.Sequential(*up)
         elif innermost:
-            # upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
-            #                             kernel_size=4, stride=2,
-            #                             padding=1, bias=use_bias)
-            upsample = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
-            upconv = DoubleConv(inner_nc * 2, outer_nc)
+            upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
+                                        kernel_size=4, stride=2,
+                                        padding=1, bias=use_bias)
+            # upsample = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
+            # upconv = DoubleConv(inner_nc * 2, outer_nc)
             down = [downrelu, downconv]
-            up = [uprelu, upconv, upsample, upnorm]
+            up = [uprelu, upconv, upnorm]
             self.down = nn.Sequential(*down)
             self.up = nn.Sequential(*up)
         else:
-            # upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
-            #                             kernel_size=4, stride=2,
-            #                             padding=1, bias=use_bias)
-            upsample = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
-            upconv = DoubleConv(inner_nc * 2, outer_nc)
+            upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
+                                        kernel_size=4, stride=2,
+                                        padding=1, bias=use_bias)
+            # upsample = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
+            # upconv = DoubleConv(inner_nc * 2, outer_nc)
             down = [downrelu, downconv, downnorm]
-            up = [uprelu, upconv, upsample, upnorm]
+            up = [uprelu, upconv, upnorm]
             if use_dropout:
                 up += [nn.Dropout(0.5)]
 
