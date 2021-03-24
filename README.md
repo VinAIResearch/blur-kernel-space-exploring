@@ -113,6 +113,18 @@ To be updated
 ## Model Zoo
 Pretrained models can be downloaded here.
 
+|Model name              | dataset(s)|
+|:-----------------------|----------:|
+|[REDS woVAE]()          |           |
+|:-----------------------|----------:|
+|[GOPRO woVAE]()         |           |
+|:-----------------------|----------:|
+|[GOPRO wVAE]()          |           |
+|:-----------------------|----------:|
+|[GOPRO + REDS woVAE]()  |           |
+|:-----------------------|----------:|
+|[levin woVAE]()         |           |
+
 
 ## Notes and references
 The training code is borrowed from EDVR project: https://github.com/xinntao/EDVR
