@@ -1,7 +1,7 @@
 #### general settings
-name: mix_wsharp_grayscale
+name: levin
 use_tb_logger: true
-model: video_base
+model: image_base
 distortion: deblur
 scale: 1
 gpu_ids: [0]
@@ -9,17 +9,16 @@ gpu_ids: [0]
 #### datasets
 datasets:
   train:
-    name: mixgray
-    mode: mixgray
+    name: levin
+    mode: levin
     interval_list: [1]
-    dataroots_HQ: ['../datasets/REDS/train_sharp_wval.lmdb', '../datasets/GOPRO/train_sharp.lmdb']
-    dataroots_LQ: ['../datasets/REDS/train_blur_wval.lmdb', '../datasets/GOPRO/train_blur_linear.lmdb']
-    dataset_weights: [1, 10]
+    HQ_pattern: datasets/levin_all_kernels/sharp/**/*.png
+    LQ_pattern: datasets/levin_all_kernels/blur/**/*.png
     cache_keys: ~
 
     N_frames: 1
     use_shuffle: true
-    n_workers: 3  # per GPU
+    n_workers: 4  # per GPU
     batch_size: 16
     HQ_size: 256
     LQ_size: 256
@@ -28,26 +27,27 @@ datasets:
     color: RGB
 
 #### network structures
-network_G:
+KernelWizard:
   nf: 64
   front_RBs: 10
   back_RBs: 20
   N_frames: 1
   input_nc: 1
   kernel_dim: 512
-  BlurEstimator:
+  use_vae: false
+  KernelExtractor:
     norm: none
     use_sharp: true
     n_blocks: 4
     padding_type: reflect
     use_dropout: false
-  VAE:
-    get_norm_layer: none
+  Adapter:
+    norm: none
     use_dropout: false
 
 #### path
 path:
-  pretrain_model_G: ../experiments/REDS_wsharp_grayscale/models/15000_G.pth
+  pretrain_model_G: ~
   strict_load: false
   resume_state: ~
 
@@ -75,4 +75,4 @@ train:
 #### logger
 logger:
   print_freq: 10
-  save_checkpoint_freq: !!float 5000
+  save_checkpoint_freq: !!float 5e3

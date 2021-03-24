@@ -1,7 +1,7 @@
 #### general settings
-name: levin
+name: GOPRO_VAE
 use_tb_logger: true
-model: video_base
+model: image_base
 distortion: deblur
 scale: 1
 gpu_ids: [0]
@@ -9,44 +9,45 @@ gpu_ids: [0]
 #### datasets
 datasets:
   train:
-    name: levin
-    mode: levin
+    name: GOPRO
+    mode: GOPRO
     interval_list: [1]
-    HQ_pattern: ../datasets/levin_all_kernels/sharp/**/*.png
-    LQ_pattern: ../datasets/levin_all_kernels/blur/**/*.png
+    dataroot_HQ: datasets/GOPRO/train_sharp.lmdb
+    dataroot_LQ: datasets/GOPRO/train_blur_linear.lmdb
     cache_keys: ~
 
-    N_frames: 1
     use_shuffle: true
     n_workers: 4  # per GPU
-    batch_size: 16
-    HQ_size: 256
+    batch_size: 8
+    HQ_size: &HQ_SIZE 256
     LQ_size: 256
     use_flip: true
     use_rot: true
     color: RGB
 
 #### network structures
-network_G:
+KernelWizard:
+  input_nc: 3
   nf: 64
   front_RBs: 10
   back_RBs: 20
   N_frames: 1
-  input_nc: 1
   kernel_dim: 512
-  BlurEstimator:
+  img_size: *HQ_SIZE
+  use_vae: true
+  KernelExtractor:
     norm: none
     use_sharp: true
     n_blocks: 4
     padding_type: reflect
     use_dropout: false
-  VAE:
-    get_norm_layer: none
+  Adapter:
+    norm: none
     use_dropout: false
 
 #### path
 path:
-  pretrain_model_G: ../experiments/pretrained/levin_wsharp.pth
+  pretrain_model_G: experiments/pretrained/GOPRO_wsharp_woVAE.pth
   strict_load: false
   resume_state: ~
 
@@ -64,9 +65,8 @@ train:
   eta_min: !!float 1e-8
 
   pixel_criterion: cb
-  pixel_weight: 1.0
-  kernel_weight: 0.1
-  gradient_loss_weight: 0.3
+  pixel_weight: !!float 1.0
+  kl_weight: !!float 10.0
   val_freq: !!float 5e3
 
   manual_seed: 0

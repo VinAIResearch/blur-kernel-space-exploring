@@ -1,25 +1,27 @@
 #### general settings
-name: REDS_wsharp_woVAE
+name: mix_wsharp
 use_tb_logger: true
-model: video_base
+model: image_base
 distortion: deblur
 scale: 1
-gpu_ids: [3]
+gpu_ids: [0]
 
 #### datasets
 datasets:
   train:
-    name: REDS
-    mode: REDS
+    name: mix
+    mode: mix
     interval_list: [1]
-    dataroot_HQ: ../datasets/REDS/train_sharp_wval.lmdb
-    dataroot_LQ: ../datasets/REDS/train_blur_wval.lmdb
+    dataroots_HQ: ['datasets/REDS/train_sharp_wval.lmdb', 'datasets/GOPRO/train_sharp.lmdb']
+    dataroots_LQ: ['datasets/REDS/train_blur_wval.lmdb', 'datasets/GOPRO/train_blur_linear.lmdb']
+    dataset_weights: [1, 10]
     cache_keys: ~
 
+    N_frames: 1
     use_shuffle: true
-    n_workers: 4  # per GPU
-    batch_size: 13
-    HQ_size: &HQ_SIZE 256
+    n_workers: 3  # per GPU
+    batch_size: 16
+    HQ_size: 256
     LQ_size: 256
     use_flip: true
     use_rot: true
@@ -33,7 +35,6 @@ KernelWizard:
   back_RBs: 20
   N_frames: 1
   kernel_dim: 512
-  img_size: *HQ_SIZE
   use_vae: false
   KernelExtractor:
     norm: none
@@ -49,7 +50,7 @@ KernelWizard:
 path:
   pretrain_model_G: ~
   strict_load: false
-  resume_state: ../experiments/REDS_wsharp_woVAE/training_state/115000.state
+  resume_state: ~
 
 #### training settings: learning rate scheme, loss
 train:
@@ -62,11 +63,12 @@ train:
   T_period: [50000, 100000, 150000, 150000, 150000]
   restarts: [50000, 150000, 300000, 450000]
   restart_weights: [1, 1, 1, 1]
-  eta_min: !!float 1e-6
+  eta_min: !!float 1e-8
 
   pixel_criterion: cb
   pixel_weight: 1.0
-  kl_weight: 0.0
+  kernel_weight: 0.1
+  gradient_loss_weight: 0.3
   val_freq: !!float 5e3
 
   manual_seed: 0
@@ -74,4 +76,4 @@ train:
 #### logger
 logger:
   print_freq: 10
-  save_checkpoint_freq: !!float 5e3
+  save_checkpoint_freq: !!float 5000
