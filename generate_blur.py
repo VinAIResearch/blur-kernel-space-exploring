@@ -1,8 +1,8 @@
 import argparse
-import torch
-import cv2
 
+import cv2
 import options.options as options
+import torch
 import utils.util as util
 from models.kernel_wizard import KernelWizard
 
@@ -38,7 +38,7 @@ def main():
 
     LQ_img = util.tensor2img(LQ_tensor)
 
-    cv2.imwrite('LQ.png', LQ_img)
+    cv2.imwrite("LQ.png", LQ_img)
 
 
 main()
