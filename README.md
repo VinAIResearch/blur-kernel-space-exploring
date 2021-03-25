@@ -96,9 +96,6 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
 
 ![Data augmentation examples](imgs/augmentation.jpg)
 
-#### Testing data augmentation with ground-truth
-To be updated
-
 #### Generate novel blur kernels
 To generate a blur image given a sharp image, use the following command:
 ```sh
