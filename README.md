@@ -90,7 +90,7 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
                                  --HQ_root=datasets/GOPRO/sharp_blur.lmdb \\
                                  --save_path=results/GOPRO_augmented \\
                                  --num_images=10000\\
-                                 --yml_path=options/GOPRO/wsharp_woVAE.yml
+                                 --yml_path=options/GOPRO/woVAE.yml
 ```
 `target_H` and `target_W` is the desired shape of the augmented images, `LQ_root` and `HQ_root` is the path of the lmdb dataset that was created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
 
@@ -100,10 +100,14 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
 To be updated
 
 #### Generate novel blur kernels
-To be updated
-
-![kernel generating examples]
-()
+To generate a blur image given a sharp image, use the following command:
+```sh
+python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \\
+		     --yml_path=options/GOPRO/wVAE.yml \\
+		     --image_path=imgs/sample_sharp.png
+```
+**Note**: This is only work with models that were trained with `--VAE` flag.
+![kernel generating examples](imgs/generate_blur.jpg)
 
 #### Image Deblurring
 To be updated
