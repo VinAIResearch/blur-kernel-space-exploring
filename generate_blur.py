@@ -1,8 +1,9 @@
 import argparse
-
-import cv2
-import options.options as options
 import torch
+import cv2
+import numpy as np
+
+import options.options as options
 import utils.util as util
 from models.kernel_wizard import KernelWizard
 
@@ -29,16 +30,17 @@ def main():
     model.load_state_dict(torch.load(model_path))
     model = model.to(device)
 
-    HQ = cv2.cvtColor(cv2.imread(image_path))
-    HQ_tensor = torch.Tensor(HQ).unsqueeze(0).to(device)
+    HQ = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB) / 255.
+    HQ = np.transpose(HQ, (2, 0, 1))
+    HQ_tensor = torch.Tensor(HQ).unsqueeze(0).to(device).cuda()
 
     with torch.no_grad():
-        kernel = torch.randn((1, 512, 4, 4))
+        kernel = torch.randn((1, 512, 2, 2)).cuda()
         LQ_tensor = model.adaptKernel(HQ_tensor, kernel)
 
     LQ_img = util.tensor2img(LQ_tensor)
 
-    cv2.imwrite("LQ.png", LQ_img)
+    cv2.imwrite('blur.png', LQ_img)
 
 
 main()
