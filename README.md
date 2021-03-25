@@ -113,17 +113,18 @@ To be updated
 ## Model Zoo
 Pretrained models can be downloaded here.
 
-|Model name              | dataset(s)|
-|:-----------------------|----------:|
-|[REDS woVAE]()          |           |
-|:-----------------------|----------:|
-|[GOPRO woVAE]()         |           |
-|:-----------------------|----------:|
-|[GOPRO wVAE]()          |           |
-|:-----------------------|----------:|
-|[GOPRO + REDS woVAE]()  |           |
-|:-----------------------|----------:|
-|[levin woVAE]()         |           |
+
+[REDS]: https://seungjunnah.github.io/Datasets/reds.html
+[GOPRO]: https://seungjunnah.github.io/Datasets/gopro
+[levin]: https://drive.google.com/file/d/1CyP9rveQ0Teq8zFnfcrg8pIdiU6nuyUY/view?usp=sharing
+
+|Model name              | dataset(s)      | status                   |
+|:-----------------------|:---------------:|-------------------------:|
+|[REDS woVAE]()          | [REDS]          |:heavy_check_mark:        |
+|[GOPRO woVAE]()         | [GOPRO]         | :heavy_check_mark:       |
+|[GOPRO wVAE]()          | [GOPRO]         |                          |
+|[GOPRO + REDS woVAE]()  | [GOPRO], [REDS] | :heavy_check_mark:       |
+|[levin woVAE]()         | [levin]         | :heavy_check_mark:       |
 
 
 ## Notes and references
