@@ -1,0 +1,36 @@
+num_iters: 5000
+num_warmup_iters: 300
+x_lr: 1e-4
+k_lr: 1e-4
+img_size: [256, 256]
+
+ImageDIP:
+    nf: 64
+    norm: none
+
+KernelDIP:
+    nf: 64
+    n_blocks: 6
+    padding_type: reflect
+    use_dropout: false
+    kernel_dim: 512
+
+KernelWizard:
+  pretrained: experiments/pretrained/GOPRO_woVAE.pth
+  input_nc: 3
+  nf: 64
+  front_RBs: 10
+  back_RBs: 20
+  N_frames: 1
+  kernel_dim: 512
+  img_size: *HQ_SIZE
+  use_vae: false
+  KernelExtractor:
+    norm: none
+    use_sharp: true
+    n_blocks: 4
+    padding_type: reflect
+    use_dropout: false
+  Adapter:
+    norm: none
+    use_dropout: false

@@ -11,7 +11,6 @@ from shutil import get_terminal_size
 import cv2
 import numpy as np
 import torch
-import torch.nn.functional as F
 import yaml
 from torchvision.utils import make_grid
 
@@ -148,89 +147,6 @@ def save_img(img, img_path, mode="RGB"):
     cv2.imwrite(img_path, img)
 
 
-def DUF_downsample(x, scale=4):
-    """Downsamping with Gaussian kernel used in the DUF official code
-
-    Args:
-        x (Tensor, [B, T, C, H, W]): frames to be downsampled.
-        scale (int): downsampling factor: 2 | 3 | 4.
-    """
-
-    assert scale in [2, 3, 4], "Scale [{}] is not supported".format(scale)
-
-    def gkern(kernlen=13, nsig=1.6):
-        import scipy.ndimage.filters as fi
-
-        inp = np.zeros((kernlen, kernlen))
-        # set element at the middle to one, a dirac delta
-        inp[kernlen // 2, kernlen // 2] = 1
-        # gaussian-smooth the dirac, resulting in a gaussian filter mask
-        return fi.gaussian_filter(inp, nsig)
-
-    B, T, C, H, W = x.size()
-    x = x.view(-1, 1, H, W)
-
-    # 6 is the pad of the gaussian filter
-    pad_w, pad_h = 6 + scale * 2, 6 + scale * 2
-
-    r_h, r_w = 0, 0
-    if scale == 3:
-        r_h = 3 - (H % 3)
-        r_w = 3 - (W % 3)
-    x = F.pad(x, [pad_w, pad_w + r_w, pad_h, pad_h + r_h], "reflect")
-
-    gaussian_filter = torch.from_numpy(gkern(13, 0.4 * scale)).type_as(x).unsqueeze(0).unsqueeze(0)
-    x = F.conv2d(x, gaussian_filter, stride=scale)
-    x = x[:, :, 2:-2, 2:-2]
-    x = x.view(B, T, C, x.size(2), x.size(3))
-    return x
-
-
-def single_forward(model, inp, LMs=None):
-    """PyTorch model forward (single test), it is just a simple warpper
-    Args:
-        model (PyTorch model)
-        inp (Tensor): inputs defined by the model
-
-    Returns:
-        output (Tensor): outputs of the model. float, in CPU
-    """
-    with torch.no_grad():
-        model_output = model(inp, LMs)
-        if isinstance(model_output, list) or isinstance(model_output, tuple):
-            output = model_output[0]
-        else:
-            output = model_output
-    output = output.data.float().cpu()
-    return output
-
-
-def flipx4_forward(model, inp):
-    """Flip testing with X4 self ensemble, i.e., normal,
-    flip H, flip W, flip H and W
-    Args:
-        model (PyTorch model)
-        inp (Tensor): inputs defined by the model
-
-    Returns:
-        output (Tensor): outputs of the model. float, in CPU
-    """
-    # normal
-    output_f = single_forward(model, inp)
-
-    # flip W
-    output = single_forward(model, torch.flip(inp, (-1,)))
-    output_f = output_f + torch.flip(output, (-1,))
-    # flip H
-    output = single_forward(model, torch.flip(inp, (-2,)))
-    output_f = output_f + torch.flip(output, (-2,))
-    # flip both H and W
-    output = single_forward(model, torch.flip(inp, (-2, -1)))
-    output_f = output_f + torch.flip(output, (-2, -1))
-
-    return output_f / 4
-
-
 ####################
 # metric
 ####################
@@ -352,3 +268,53 @@ class ProgressBar(object):
                 )
             )
         sys.stdout.flush()
+
+
+def img2tensor(img):
+    return torch.from_numpy(np.ascontiguousarray(np.transpose(img / 255., (2, 0, 1)))).float()
+
+
+def fill_noise(x, noise_type):
+    """Fills tensor `x` with noise of type `noise_type`."""
+    if noise_type == 'u':
+        x.uniform_()
+    elif noise_type == 'n':
+        x.normal_()
+    else:
+        assert False
+
+
+def np_to_torch(img_np):
+    '''Converts image in numpy.array to torch.Tensor.
+    From C x W x H [0..1] to  C x W x H [0..1]
+    '''
+    return torch.from_numpy(img_np)[None, :]
+
+
+def get_noise(input_depth, method, spatial_size, noise_type='u', var=1. / 10):
+    """Returns a pytorch.Tensor of size (1 x `input_depth` x `spatial_size[0]` x `spatial_size[1]`)
+    initialized in a specific way.
+    Args:
+        input_depth: number of channels in the tensor
+        method: `noise` for fillting tensor with noise; `meshgrid` for np.meshgrid
+        spatial_size: spatial size of the tensor to initialize
+        noise_type: 'u' for uniform; 'n' for normal
+        var: a factor, a noise will be multiplicated by. Basically it is standard deviation scaler.
+    """
+    if isinstance(spatial_size, int):
+        spatial_size = (spatial_size, spatial_size)
+    if method == 'noise':
+        shape = [1, input_depth, spatial_size[0], spatial_size[1]]
+        net_input = torch.zeros(shape)
+
+        fill_noise(net_input, noise_type)
+        net_input *= var
+    elif method == 'meshgrid':
+        assert input_depth == 2
+        X, Y = np.meshgrid(np.arange(0, spatial_size[1]) / float(spatial_size[1] - 1), np.arange(0, spatial_size[0]) / float(spatial_size[0] - 1))
+        meshgrid = np.concatenate([X[None, :], Y[None, :]])
+        net_input = np_to_torch(meshgrid)
+    else:
+        assert False
+
+    return net_input
