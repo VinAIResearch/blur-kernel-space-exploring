@@ -1,14 +1,12 @@
 import logging
 from collections import OrderedDict
 
-import cv2
 import models.lr_scheduler as lr_scheduler
 import torch
 import torch.nn as nn
 from models.kernel_wizard import KernelWizard
 from models.loss import CharbonnierLoss
 from torch.nn.parallel import DataParallel, DistributedDataParallel
-from utils.util import tensor2img
 
 from .base_model import BaseModel
 

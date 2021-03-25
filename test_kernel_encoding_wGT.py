@@ -1,11 +1,11 @@
 import argparse
+import glob
 import logging
 import os
-import torch
-import cv2
-import glob
 
+import cv2
 import options.options as options
+import torch
 import utils.util as util
 from models.kernel_wizard import KernelWizard
 

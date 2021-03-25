@@ -3,13 +3,13 @@ import logging
 import os
 import os.path as osp
 import random
-import torch
+
+import cv2
+import data.util as data_util
 import lmdb
 import numpy as np
-import cv2
-
-import data.util as data_util
 import options.options as options
+import torch
 import utils.util as util
 from models.kernel_wizard import KernelWizard
 
@@ -29,18 +29,28 @@ def main():
     parser.add_argument("--source_W", action="store", help="source image width", type=int, required=True)
     parser.add_argument("--target_H", action="store", help="target image height", type=int, required=True)
     parser.add_argument("--target_W", action="store", help="target image width", type=int, required=True)
-    parser.add_argument("--augmented_H", action="store", help="desired height of the augmented images",
-                         type=int, required=True)
-    parser.add_argument("--augmented_W", action="store", help="desired width of the augmented images",
-                         type=int, required=True)
+    parser.add_argument(
+        "--augmented_H", action="store", help="desired height of the augmented images", type=int, required=True
+    )
+    parser.add_argument(
+        "--augmented_W", action="store", help="desired width of the augmented images", type=int, required=True
+    )
 
     parser.add_argument("--model_path", action="store", help="model path", type=str, default=None)
-    parser.add_argument("--source_LQ_root", action="store", help="source low-quality dataroot", type=str, required=True)
-    parser.add_argument("--source_HQ_root", action="store", help="source high-quality dataroot", type=str, required=True)
-    parser.add_argument("--target_HQ_root", action="store", help="target high-quality dataroot", type=str, required=True)
+    parser.add_argument(
+        "--source_LQ_root", action="store", help="source low-quality dataroot", type=str, required=True
+    )
+    parser.add_argument(
+        "--source_HQ_root", action="store", help="source high-quality dataroot", type=str, required=True
+    )
+    parser.add_argument(
+        "--target_HQ_root", action="store", help="target high-quality dataroot", type=str, required=True
+    )
     parser.add_argument("--save_path", action="store", help="save path", type=str, required=True)
     parser.add_argument("--yml_path", action="store", help="yml path", type=str, required=True)
-    parser.add_argument("--num_images", action="store", help="number of desire augmented images", type=int, required=True)
+    parser.add_argument(
+        "--num_images", action="store", help="number of desire augmented images", type=int, required=True
+    )
 
     args = parser.parse_args()
 
