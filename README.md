@@ -117,13 +117,11 @@ Pretrained models can be downloaded here.
 
 [REDS]: https://seungjunnah.github.io/Datasets/reds.html
 [GOPRO]: https://seungjunnah.github.io/Datasets/gopro
-[levin]: https://drive.google.com/file/d/1CyP9rveQ0Teq8zFnfcrg8pIdiU6nuyUY/view?usp=sharing
 
 [REDS woVAE]: https://drive.google.com/file/d/12ZhjXWcYhAZjBnMtF0ai0R5PQydZct61/view?usp=sharing
 [GOPRO woVAE]: https://drive.google.com/file/d/1WrVALP-woJgtiZyvQ7NOkaZssHbHwKYn/view?usp=sharing
 [GOPRO wVAE]: None
 [GOPRO + REDS woVAE]: https://drive.google.com/file/d/169R0hEs3rNeloj-m1rGS4YjW38pu-LFD/view?usp=sharing
-[levin woVAE]: https://drive.google.com/file/d/15v55zBtltpBUiaABQKoCruHb6ih7FYR1/view?usp=sharing
 
 |Model name              | dataset(s)      | status                   |
 |:-----------------------|:---------------:|-------------------------:|
@@ -131,7 +129,6 @@ Pretrained models can be downloaded here.
 |[GOPRO woVAE]           | [GOPRO]         | :heavy_check_mark:       |
 |[GOPRO wVAE]            | [GOPRO]         |                          |
 |[GOPRO + REDS woVAE]    | [GOPRO], [REDS] | :heavy_check_mark:       |
-|[levin woVAE]           | [levin]         | :heavy_check_mark:       |
 
 
 ## Notes and references
