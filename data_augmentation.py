@@ -132,6 +132,7 @@ def main():
 
         cv2.imwrite(target_HQ_dst, target_HQ_img)
         cv2.imwrite(target_LQ_dst, target_LQ_img)
+        # torch.save(kernel, osp.join(osp.dirname(target_LQ_dst), f'kernel{i:03d}.pth'))
 
         psnr = util.calculate_psnr(LQ_img, fake_LQ_img)
 

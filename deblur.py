@@ -2,7 +2,7 @@ import argparse
 import cv2
 import yaml
 
-from models.JointDeblur import JointDeblur
+from models.joint_deblur import JointDeblur
 
 
 def main():
@@ -18,8 +18,9 @@ def main():
         opt = yaml.safe_load(f)
     model = JointDeblur(opt)
 
-    blur_img = cv2.cvtColor(cv2.imread(args.image_path))
+    blur_img = cv2.cvtColor(cv2.imread(args.image_path), cv2.COLOR_BGR2RGB)
     sharp_img = model.deblur(blur_img)
+    sharp_img = cv2.cvtColor(sharp_img, cv2.COLOR_RGB2BGR)
 
     cv2.imwrite("res.png", sharp_img)
 

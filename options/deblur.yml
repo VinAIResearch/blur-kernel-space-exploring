@@ -1,12 +1,17 @@
 num_iters: 5000
 num_warmup_iters: 300
-x_lr: 1e-4
-k_lr: 1e-4
-img_size: [256, 256]
+x_lr: !!float 1e-4
+k_lr: !!float 1e-4
+img_size: &HQ_SIZE [256, 256]
+warmup_k_path: experiments/pretrained/kernel.pth
+reg_noise_std: !!float 0.001
 
 ImageDIP:
+    input_nc: 8
+    output_nc: 3
     nf: 64
     norm: none
+    padding_type: reflect
 
 KernelDIP:
     nf: 64
@@ -14,6 +19,7 @@ KernelDIP:
     padding_type: reflect
     use_dropout: false
     kernel_dim: 512
+    norm: none
 
 KernelWizard:
   pretrained: experiments/pretrained/GOPRO_woVAE.pth

@@ -98,12 +98,12 @@ class UnetSkipConnectionBlock(nn.Module):
             self.up = nn.Sequential(*up)
 
     def forward(self, x, noise):
-        if noise is None:
-            noise = torch.randn_like(self.down(x))
 
         if self.outermost:
             return self.up(self.submodule(self.down(x), noise))
         elif self.innermost:  # add skip connections
+            if noise is None:
+                noise = torch.randn((1, 512, 8, 8)).cuda() * 0.0007
             return torch.cat((self.up(torch.cat((self.down(x), noise), dim=1)), x), dim=1)
         else:
             return torch.cat((self.up(self.submodule(self.down(x), noise)), x), dim=1)
