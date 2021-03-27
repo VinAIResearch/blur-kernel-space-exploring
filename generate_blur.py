@@ -5,7 +5,7 @@ import numpy as np
 
 import options.options as options
 import utils.util as util
-from models.kernel_wizard import KernelWizard
+from models.kernel_encoding.kernel_wizard import KernelWizard
 
 
 def main():

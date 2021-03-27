@@ -5,11 +5,13 @@ from tqdm import tqdm
 
 import utils.util as util
 import models.arch_util as arch_util
-from models.loss import SSIM, PerceptualLoss, HyperLaplacianPenalty
-from models.kernel_wizard import KernelWizard
-from models.unet_parts import UnetSkipConnectionBlock
-from models.skip import skip
-from models.resnet import ResnetBlock
+
+from models.losses.ssim_loss import SSIM
+from models.losses.perceptual_loss import PerceptualLoss
+from models.losses.hyper_laplacian_penalty import HyperLaplacianPenalty
+from models.kernel_encoding.kernel_wizard import KernelWizard
+from models.backbones.resnet import ResnetBlock
+from models.backbones.unet_parts import UnetSkipConnectionBlock
 
 
 class ImageDIP(nn.Module):
@@ -19,13 +21,26 @@ class ImageDIP(nn.Module):
     def __init__(self, opt):
         super(ImageDIP, self).__init__()
 
-        self.model = skip(opt['input_nc'], 3,
-                          num_channels_down = [128, 128, 128, 128, 128],
-                          num_channels_up   = [128, 128, 128, 128, 128],
-                          num_channels_skip = [16, 16, 16, 16, 16],
-                          upsample_mode='bilinear',
-                          need_sigmoid=True, need_bias=True,
-                          pad=opt['padding_type'], act_fun='LeakyReLU')
+        input_nc = opt["input_nc"]
+        output_nc = opt["output_nc"]
+        ngf = opt["nf"]
+        norm_layer = arch_util.get_norm_layer(opt["norm"])
+
+        # construct unet structure
+        unet_block = UnetSkipConnectionBlock(
+            ngf * 8, ngf * 8, input_nc=None, submodule=None, norm_layer=norm_layer, innermost=True
+        )
+        # gradually reduce the number of filters from ngf * 8 to ngf
+        unet_block = UnetSkipConnectionBlock(
+            ngf * 4, ngf * 8, input_nc=None, submodule=unet_block, norm_layer=norm_layer
+        )
+        unet_block = UnetSkipConnectionBlock(
+            ngf * 2, ngf * 4, input_nc=None, submodule=unet_block, norm_layer=norm_layer
+        )
+        unet_block = UnetSkipConnectionBlock(ngf, ngf * 2, input_nc=None, submodule=unet_block, norm_layer=norm_layer)
+        self.model = UnetSkipConnectionBlock(
+            output_nc, ngf, input_nc=input_nc, submodule=unet_block, outermost=True, norm_layer=norm_layer
+        )
 
     def forward(self, img):
         return self.model(img, None)
@@ -110,7 +125,6 @@ class ImageDeblur:
         # Input vector of DIPs is sampled from N(z, I)
         reg_noise_std = self.opt['reg_noise_std']
 
-        print('Warming up x DIP')
         for step in tqdm(range(self.opt['num_warmup_iters'])):
             self.x_optimizer.zero_grad()
             dip_zx_rand = self.dip_zx + reg_noise_std * torch.randn_like(self.dip_zx).cuda()
@@ -119,13 +133,6 @@ class ImageDeblur:
             loss = self.mse(x, warmup_x)
             loss.backward()
             self.x_optimizer.step()
-
-        import cv2
-        import utils.util as util
-
-        x = self.x_dip(dip_zx_rand).detach()
-        x = util.tensor2img(x)
-        cv2.imwrite('warmup_x.png', x)
 
         print('Warming up k DIP')
         for step in tqdm(range(self.opt['num_warmup_iters'])):

@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 
-from models.image_deblur import ImageDeblur
+from models.deblurring.image_deblur import ImageDeblur
 import utils.util as util
 
 

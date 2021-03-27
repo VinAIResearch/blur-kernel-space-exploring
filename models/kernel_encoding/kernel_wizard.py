@@ -1,10 +1,11 @@
 import functools
 
-import models.arch_util as arch_util
 import torch
 import torch.nn as nn
-from models.resnet import ResidualBlock_noBN, ResnetBlock
-from models.unet_parts import UnetSkipConnectionBlock
+
+import models.arch_util as arch_util
+from models.backbones.resnet import ResidualBlock_noBN, ResnetBlock
+from models.backbones.unet_parts import UnetSkipConnectionBlock
 
 
 # The function F in the paper

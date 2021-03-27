@@ -2,7 +2,7 @@ import argparse
 import cv2
 import yaml
 
-from models.joint_deblur import JointDeblur
+from models.deblurring.joint_deblur import JointDeblur
 
 
 def main():

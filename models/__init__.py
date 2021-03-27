@@ -7,7 +7,7 @@ logger = logging.getLogger("base")
 def create_model(opt):
     model = opt["model"]
     if model == "image_base":
-        from .image_base_model import ImageBaseModel as M
+        from models.kernel_encoding.image_base_model import ImageBaseModel as M
     else:
         raise NotImplementedError("Model [{:s}] not recognized.".format(model))
     m = M(opt)
