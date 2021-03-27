@@ -11,7 +11,7 @@ from models.losses.perceptual_loss import PerceptualLoss
 from models.losses.hyper_laplacian_penalty import HyperLaplacianPenalty
 from models.kernel_encoding.kernel_wizard import KernelWizard
 from models.backbones.resnet import ResnetBlock
-from models.backbones.unet_parts import UnetSkipConnectionBlock
+from models.backbones.skip.skip import skip
 
 
 class ImageDIP(nn.Module):
@@ -23,27 +23,17 @@ class ImageDIP(nn.Module):
 
         input_nc = opt["input_nc"]
         output_nc = opt["output_nc"]
-        ngf = opt["nf"]
-        norm_layer = arch_util.get_norm_layer(opt["norm"])
 
-        # construct unet structure
-        unet_block = UnetSkipConnectionBlock(
-            ngf * 8, ngf * 8, input_nc=None, submodule=None, norm_layer=norm_layer, innermost=True
-        )
-        # gradually reduce the number of filters from ngf * 8 to ngf
-        unet_block = UnetSkipConnectionBlock(
-            ngf * 4, ngf * 8, input_nc=None, submodule=unet_block, norm_layer=norm_layer
-        )
-        unet_block = UnetSkipConnectionBlock(
-            ngf * 2, ngf * 4, input_nc=None, submodule=unet_block, norm_layer=norm_layer
-        )
-        unet_block = UnetSkipConnectionBlock(ngf, ngf * 2, input_nc=None, submodule=unet_block, norm_layer=norm_layer)
-        self.model = UnetSkipConnectionBlock(
-            output_nc, ngf, input_nc=input_nc, submodule=unet_block, outermost=True, norm_layer=norm_layer
-        )
+        self.model = skip(input_nc, output_nc,
+                          num_channels_down = [128, 128, 128, 128, 128],
+                          num_channels_up   = [128, 128, 128, 128, 128],
+                          num_channels_skip = [16, 16, 16, 16, 16],
+                          upsample_mode='bilinear',
+                          need_sigmoid=True, need_bias=True,
+                          pad=opt['padding_type'], act_fun='LeakyReLU')
 
     def forward(self, img):
-        return self.model(img, None)
+        return self.model(img)
 
 
 class KernelDIP(nn.Module):
