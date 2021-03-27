@@ -1,7 +1,7 @@
 import argparse
+
 import cv2
 import yaml
-
 from models.deblurring.joint_deblur import JointDeblur
 
 

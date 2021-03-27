@@ -1,15 +1,13 @@
 import logging
 from collections import OrderedDict
 
+import models.lr_scheduler as lr_scheduler
 import torch
 import torch.nn as nn
-from torch.nn.parallel import DataParallel, DistributedDataParallel
-
-import models.lr_scheduler as lr_scheduler
+from models.kernel_encoding.base_model import BaseModel
 from models.kernel_encoding.kernel_wizard import KernelWizard
 from models.losses.charbonnier_loss import CharbonnierLoss
-
-from models.kernel_encoding.base_model import BaseModel
+from torch.nn.parallel import DataParallel, DistributedDataParallel
 
 
 logger = logging.getLogger("base")

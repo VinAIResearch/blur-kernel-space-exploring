@@ -1,14 +1,14 @@
+from math import exp
+
 import torch
 import torch.nn.functional as F
 from torch.autograd import Variable
-
-from math import exp
 
 
 class SSIM(torch.nn.Module):
     @staticmethod
     def gaussian(window_size, sigma):
-        gauss = torch.Tensor([exp(-(x - window_size // 2) ** 2 / float(2 * sigma ** 2)) for x in range(window_size)])
+        gauss = torch.Tensor([exp(-((x - window_size // 2) ** 2) / float(2 * sigma ** 2)) for x in range(window_size)])
         return gauss / gauss.sum()
 
     @staticmethod

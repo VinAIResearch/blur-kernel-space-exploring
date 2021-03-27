@@ -1,8 +1,7 @@
 import torch
-from tqdm import tqdm
-
-from models.deblurring.image_deblur import ImageDeblur
 import utils.util as util
+from models.deblurring.image_deblur import ImageDeblur
+from tqdm import tqdm
 
 
 class JointDeblur(ImageDeblur):
@@ -10,25 +9,25 @@ class JointDeblur(ImageDeblur):
         super(JointDeblur, self).__init__(opt)
 
     def deblur(self, y):
-        '''Deblur image
+        """Deblur image
 
         Args:
             y: Blur image
-        '''
+        """
         y = util.img2tensor(y).unsqueeze(0).cuda()
         print(y.shape)
 
         self.prepare_DIPs()
         self.reset_optimizers()
 
-        warmup_k = torch.load(self.opt['warmup_k_path']).cuda()
+        warmup_k = torch.load(self.opt["warmup_k_path"]).cuda()
         self.warmup(y, warmup_k)
 
         # Input vector of DIPs is sampled from N(z, I)
 
-        print('Deblurring')
-        reg_noise_std = self.opt['reg_noise_std']
-        for step in tqdm(range(self.opt['num_iters'])):
+        print("Deblurring")
+        reg_noise_std = self.opt["reg_noise_std"]
+        for step in tqdm(range(self.opt["num_iters"])):
             dip_zx_rand = self.dip_zx + reg_noise_std * torch.randn_like(self.dip_zx).cuda()
             dip_zk_rand = self.dip_zk + reg_noise_std * torch.randn_like(self.dip_zk).cuda()
 
@@ -44,7 +43,7 @@ class JointDeblur(ImageDeblur):
             with torch.no_grad():
                 fake_y = self.kernel_wizard.adaptKernel(x, k)
 
-            if step <= self.opt['num_iters'] // 2:
+            if step <= self.opt["num_iters"] // 2:
                 total_loss = 6e-1 * self.perceptual_loss(fake_y, y)
                 total_loss += 1 - self.ssim_loss(fake_y, y)
                 total_loss += 6e-4 * torch.norm(k)

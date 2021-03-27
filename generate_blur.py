@@ -1,9 +1,9 @@
 import argparse
-import torch
+
 import cv2
 import numpy as np
-
 import options.options as options
+import torch
 import utils.util as util
 from models.kernel_encoding.kernel_wizard import KernelWizard
 
@@ -30,7 +30,7 @@ def main():
     model.load_state_dict(torch.load(model_path))
     model = model.to(device)
 
-    HQ = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB) / 255.
+    HQ = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB) / 255.0
     HQ = np.transpose(HQ, (2, 0, 1))
     HQ_tensor = torch.Tensor(HQ).unsqueeze(0).to(device).cuda()
 
@@ -40,7 +40,7 @@ def main():
 
     LQ_img = util.tensor2img(LQ_tensor)
 
-    cv2.imwrite('blur.png', LQ_img)
+    cv2.imwrite("blur.png", LQ_img)
 
 
 main()

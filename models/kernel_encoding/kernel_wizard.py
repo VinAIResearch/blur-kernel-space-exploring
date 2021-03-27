@@ -1,9 +1,8 @@
 import functools
 
+import models.arch_util as arch_util
 import torch
 import torch.nn as nn
-
-import models.arch_util as arch_util
 from models.backbones.resnet import ResidualBlock_noBN, ResnetBlock
 from models.backbones.unet_parts import UnetSkipConnectionBlock
 
