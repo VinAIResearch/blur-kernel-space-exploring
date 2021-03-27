@@ -1,7 +1,7 @@
 num_iters: 5000
 num_warmup_iters: 300
-x_lr: !!float 1e-4
-k_lr: !!float 1e-4
+x_lr: !!float 5e-4
+k_lr: !!float 5e-4
 img_size: &HQ_SIZE [256, 256]
 warmup_k_path: experiments/pretrained/kernel.pth
 reg_noise_std: !!float 0.001

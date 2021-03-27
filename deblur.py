@@ -20,7 +20,6 @@ def main():
 
     blur_img = cv2.cvtColor(cv2.imread(args.image_path), cv2.COLOR_BGR2RGB)
     sharp_img = model.deblur(blur_img)
-    sharp_img = cv2.cvtColor(sharp_img, cv2.COLOR_RGB2BGR)
 
     cv2.imwrite("res.png", sharp_img)
 

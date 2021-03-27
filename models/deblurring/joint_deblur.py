@@ -15,7 +15,6 @@ class JointDeblur(ImageDeblur):
             y: Blur image
         """
         y = util.img2tensor(y).unsqueeze(0).cuda()
-        print(y.shape)
 
         self.prepare_DIPs()
         self.reset_optimizers()
@@ -30,9 +29,6 @@ class JointDeblur(ImageDeblur):
         for step in tqdm(range(self.opt["num_iters"])):
             dip_zx_rand = self.dip_zx + reg_noise_std * torch.randn_like(self.dip_zx).cuda()
             dip_zk_rand = self.dip_zk + reg_noise_std * torch.randn_like(self.dip_zk).cuda()
-
-            self.x_scheduler.step()
-            self.k_scheduler.step()
 
             self.x_optimizer.zero_grad()
             self.k_optimizer.zero_grad()
@@ -51,5 +47,15 @@ class JointDeblur(ImageDeblur):
                 total_loss = self.perceptual_loss(fake_y, y)
                 total_loss += 5e-2 * self.laplace_penalty(x)
                 total_loss += 6e-4 * torch.norm(k)
+
+            total_loss.backward()
+            self.x_scheduler.step()
+            self.k_scheduler.step()
+
+
+            # debugging
+            if step % 100 == 0:
+                print(torch.norm(k), step)
+                print(f"{self.k_optimizer.param_groups[0]['lr']:.3e}")
 
         return util.tensor2img(x.detach())
