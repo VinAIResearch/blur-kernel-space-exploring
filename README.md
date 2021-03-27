@@ -59,7 +59,7 @@ conda install --file requirements.txt
 -->
 To deblur an image using a pretrained model, use the following command:
 ``` sh
-python deblur_image --model_path=experiments/pretrained/GOPRO_woVAE.pth --LQ_img=imgs/blur1.png
+python deblur_image --model_path=experiments/pretrained/GOPRO_woVAE.pth --LQ_img=imgs/blur_imgs/blur1.png
 ```
 
 
@@ -94,7 +94,7 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
 ```
 `target_H` and `target_W` is the desired shape of the augmented images, `LQ_root` and `HQ_root` is the path of the lmdb dataset that was created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
 
-![Data augmentation examples](imgs/augmentation.jpg)
+![Data augmentation examples](imgs/results/augmentation.jpg)
 
 #### Generate novel blur kernels
 To generate a blur image given a sharp image, use the following command:
@@ -104,12 +104,12 @@ python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \\
 		     --image_path=imgs/sample_sharp.png
 ```
 **Note**: This is only work with models that were trained with `--VAE` flag.
-![kernel generating examples](imgs/generate_blur.jpg)
+![kernel generating examples](imgs/results/generate_blur.jpg)
 
 #### Image Deblurring
 To be updated
 
-![Image deblurring examples](imgs/deblurring.jpg)
+![Image deblurring examples](imgs/results/deblurring.jpg)
 
 ## Model Zoo
 Pretrained models can be downloaded here.
@@ -120,19 +120,20 @@ Pretrained models can be downloaded here.
 
 [REDS woVAE]: https://drive.google.com/file/d/12ZhjXWcYhAZjBnMtF0ai0R5PQydZct61/view?usp=sharing
 [GOPRO woVAE]: https://drive.google.com/file/d/1WrVALP-woJgtiZyvQ7NOkaZssHbHwKYn/view?usp=sharing
-[GOPRO wVAE]: None
+[GOPRO wVAE]: https://drive.google.com/file/d/1QMUY8mxUMgEJty2Gk7UY0WYmyyYRY7vS/view?usp=sharing
 [GOPRO + REDS woVAE]: https://drive.google.com/file/d/169R0hEs3rNeloj-m1rGS4YjW38pu-LFD/view?usp=sharing
 
 |Model name              | dataset(s)      | status                   |
 |:-----------------------|:---------------:|-------------------------:|
-|[REDS woVAE]            | [REDS]          |:heavy_check_mark:        |
+|[REDS woVAE]            | [REDS]          | :heavy_check_mark:       |
 |[GOPRO woVAE]           | [GOPRO]         | :heavy_check_mark:       |
-|[GOPRO wVAE]            | [GOPRO]         |                          |
+|[GOPRO wVAE]            | [GOPRO]         | :heavy_check_mark:       |
 |[GOPRO + REDS woVAE]    | [GOPRO], [REDS] | :heavy_check_mark:       |
 
 
 ## Notes and references
 The training code is borrowed from EDVR project: https://github.com/xinntao/EDVR
+
 The backbone code is borrowed from DeblurGAN project: https://github.com/KupynOrest/DeblurGAN
 
 ## Citation
