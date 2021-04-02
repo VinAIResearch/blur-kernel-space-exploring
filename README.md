@@ -31,7 +31,7 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
 ### Installation
 
 ``` sh
-git clone https://github.com/P0lyFish/blur-kernel-space-exploring.git
+git clone https://github.com/VinAIResearch/blur-kernel-space-exploring.git
 cd blur-kernel-space-exploring
 
 conda create -n BlurKernelSpace -y python=3.7
