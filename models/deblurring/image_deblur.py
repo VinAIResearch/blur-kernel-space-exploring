@@ -104,6 +104,9 @@ class ImageDeblur:
         self.kernel_wizard = KernelWizard(opt["KernelWizard"]).cuda()
         self.kernel_wizard.load_state_dict(torch.load(opt["KernelWizard"]["pretrained"]))
 
+        for k, v in self.kernel_wizard.named_parameters():
+            v.requires_grad = False
+
     def reset_optimizers(self):
         self.x_optimizer = torch.optim.Adam(self.x_dip.parameters(), lr=self.opt["x_lr"])
         self.k_optimizer = torch.optim.Adam(self.k_dip.parameters(), lr=self.opt["k_lr"])
