@@ -109,7 +109,12 @@ python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \\
 #### Image Deblurring
 To be updated
 
-![Image deblurring examples](imgs/results/deblurring.jpg)
+![Image deblurring examples](imgs/results/general_deblurring.jpg)
+
+#### PULSE-like Deblurring
+To be updated
+
+![PULSE-like Deblurring examples](imgs/results/pulse.jpg)
 
 ## Model Zoo
 Pretrained models can be downloaded here.
