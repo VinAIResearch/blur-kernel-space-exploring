@@ -47,13 +47,13 @@ conda install --file requirements.txt
 ```
 -->
 
-### Using the pretrained model
+### Using the pre-trained model
 
 
 <!--
 ``` diff
-- Please specify a very simple one-line command to use a pretrained model to deblur an image. You might need to specify how to download the pretrained model in the first place. Use the best generic model that you have. 
-- You might want to provide a sample input image and a sample output image. People can run this simple command to reproduce the output image and compare with the provided out to verify that they have installed your code successfully. 
+- Please specify a very simple one-line command to use a pre-trained model to deblur an image. You might need to specify how to download the pre-trained model in the first place. Use the best generic model that you have. 
+- You might want to provide a sample input image and a sample output image. People can run this simple command to reproduce the output image and compare it with the provided out to verify that they have installed your code successfully. 
 
 ```
 -->
@@ -72,13 +72,13 @@ The GOPRO dataset can be downloaded [here](https://seungjunnah.github.io/Dataset
 After downloading the datasets, you can use `scripts/create_lmdb.py` to generate lmdb dataset.
 
 ### Training
-You can train your own model using the following command:
+You can train your model using the following command:
 To train the model, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
 python train.py -opt path_to_yaml_file
 ```
 
-where `path_to_yaml_file` is the path to yaml file that contain training configurations. You can find some default configurations in `options` folder. Checkpoints and logs will be saved in `../experiments/modelName`
+where `path_to_yaml_file` is the path to yaml file that contains training configurations. You can find some default configurations in `options` folder. Checkpoints and logs will be saved in `../experiments/modelName`
 
 ### Testing
 #### Data augmentation
@@ -103,16 +103,23 @@ python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \\
 		     --yml_path=options/GOPRO/wVAE.yml \\
 		     --image_path=imgs/sample_sharp.png
 ```
-**Note**: This is only work with models that were trained with `--VAE` flag.
+**Note**: This only works with models that were trained with `--VAE` flag.
 ![kernel generating examples](imgs/results/generate_blur.jpg)
 
 #### Image Deblurring
-To be updated
+To deblur a blurry image, use the following command:
+```sh
+python deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/deblur.yml
+```
 
 ![Image deblurring examples](imgs/results/general_deblurring.jpg)
 
 #### PULSE-like Deblurring
-To be updated
+To deblur and blurry image using a latent space as sharp image prior, use the following command:
+```sh
+python run_pulse.py -input_dir imgs/blur_faces -output_dir experiments/pulse/results
+```
+Results will be saved in `experiments/pulse/results` folder.
 
 ![PULSE-like Deblurring examples](imgs/results/pulse.jpg)
 
@@ -157,3 +164,4 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
   booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)} \
 }
 ```
+
