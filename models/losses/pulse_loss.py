@@ -1,7 +1,7 @@
 import torch
-from models.pulse.bicubic import BicubicDownSample
 from models.kernel_encoding.kernel_wizard import KernelWizard
 from models.losses.ssim_loss import SSIM
+from models.pulse.bicubic import BicubicDownSample
 
 
 class LossBuilder(torch.nn.Module):
@@ -16,7 +16,7 @@ class LossBuilder(torch.nn.Module):
         self.ssim = SSIM().cuda()
 
         self.D = KernelWizard(opt["KernelWizard"]).cuda()
-        self.D.load_state_dict(torch.load(opt['KernelWizard']["pretrained"]))
+        self.D.load_state_dict(torch.load(opt["KernelWizard"]["pretrained"]))
         for v in self.D.parameters():
             v.requires_grad = False
 
@@ -41,8 +41,8 @@ class LossBuilderStyleGAN(LossBuilder):
     def __init__(self, ref_im, opt):
         super(LossBuilderStyleGAN, self).__init__(ref_im, opt)
         im_size = ref_im.shape[2]
-        factor = opt['output_size'] // im_size
-        assert im_size * factor == opt['output_size']
+        factor = opt["output_size"] // im_size
+        assert im_size * factor == opt["output_size"]
         self.bicub = BicubicDownSample(factor=factor)
 
     # Uses geodesic distance on sphere to sum pairwise distances of the 18 vectors
@@ -91,15 +91,15 @@ class LossBuilderStyleGAN2(LossBuilder):
 
     # Uses geodesic distance on sphere to sum pairwise distances of the 18 vectors
     def _loss_geocross(self, latent, **kwargs):
-        if(latent.shape[1] == 1):
+        if latent.shape[1] == 1:
             return 0
         else:
             X = latent.view(-1, 1, 14, 512)
             Y = latent.view(-1, 14, 1, 512)
-            A = ((X-Y).pow(2).sum(-1)+1e-9).sqrt()
-            B = ((X+Y).pow(2).sum(-1)+1e-9).sqrt()
-            D = 2*torch.atan2(A, B)
-            D = ((D.pow(2)*512).mean((1, 2))/ 6.0).sum()
+            A = ((X - Y).pow(2).sum(-1) + 1e-9).sqrt()
+            B = ((X + Y).pow(2).sum(-1) + 1e-9).sqrt()
+            D = 2 * torch.atan2(A, B)
+            D = ((D.pow(2) * 512).mean((1, 2)) / 6.0).sum()
             return D
 
     def forward(self, latent, gen_im, kernel, step):

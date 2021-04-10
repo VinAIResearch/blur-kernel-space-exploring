@@ -49,11 +49,13 @@ out_path.mkdir(parents=True, exist_ok=True)
 
 dataloader = DataLoader(dataset, batch_size=opt["batch_size"])
 
-if opt['stylegan_ver'] == 1:
+if opt["stylegan_ver"] == 1:
     from models.pulse.pulse_stylegan import PULSEStyleGAN
+
     model = PULSEStyleGAN(opt=opt, cache_dir=kwargs["cache_dir"])
 else:
     from models.pulse.pulse_stylegan2 import PULSEStyleGAN2
+
     model = PULSEStyleGAN2(opt=opt, cache_dir=kwargs["cache_dir"])
 
 model = DataParallel(model)

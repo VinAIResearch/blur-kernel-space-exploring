@@ -26,7 +26,7 @@ class PULSE(torch.nn.Module):
             print("Loading Synthesis Network")
         self.load_synthesis_network()
         if self.verbose:
-            print('Synthesis Network loaded!')
+            print("Synthesis Network loaded!")
 
         self.lrelu = torch.nn.LeakyReLU(negative_slope=0.2)
 
@@ -42,7 +42,9 @@ class PULSE(torch.nn.Module):
     def initialize_optimizers(self):
         # Optimizer for k
         self.optimizer_k = torch.optim.Adam(self.k_dip.parameters(), lr=self.opt["k_lr"])
-        self.scheduler_k = StepLR(self.optimizer_k, step_size=self.opt["num_epochs"] * self.opt["num_k_iters"] // 5, gamma=0.7)
+        self.scheduler_k = StepLR(
+            self.optimizer_k, step_size=self.opt["num_epochs"] * self.opt["num_k_iters"] // 5, gamma=0.7
+        )
 
         # Optimizer for x
         optimizer_dict = {
@@ -67,7 +69,7 @@ class PULSE(torch.nn.Module):
 
     def warmup_dip(self):
         self.reg_noise_std = self.opt["reg_noise_std"]
-        warmup_k = torch.load('experiments/pretrained/kernel.pth')
+        warmup_k = torch.load("experiments/pretrained/kernel.pth")
 
         mse = nn.MSELoss().cuda()
 
@@ -153,7 +155,7 @@ class PULSE(torch.nn.Module):
             tq_x.set_postfix(loss=msg)
 
     def log(self):
-        if(self.cur_loss < self.min_loss):
+        if self.cur_loss < self.min_loss:
             self.min_loss = self.cur_loss
             self.best_im = self.gen_im.clone()
             self.best_ker = self.gen_ker.clone()
@@ -185,8 +187,8 @@ class PULSE(torch.nn.Module):
             self.optimize_k_step(epoch)
             self.log()
 
-            if self.opt['save_intermediate']:
+            if self.opt["save_intermediate"]:
                 yield (
                     self.best_im.cpu().detach().clamp(0, 1),
-                    self.loss_builder.get_blur_img(self.best_im, self.best_ker)
+                    self.loss_builder.get_blur_img(self.best_im, self.best_ker),
                 )

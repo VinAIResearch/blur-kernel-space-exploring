@@ -1,9 +1,9 @@
-import torch
 from pathlib import Path
 
+import torch
+from models.losses.pulse_loss import LossBuilderStyleGAN2
 from models.pulse.pulse import PULSE
 from models.pulse.stylegan2 import Generator
-from models.losses.pulse_loss import LossBuilderStyleGAN2
 
 
 class PULSEStyleGAN2(PULSE):
@@ -12,7 +12,7 @@ class PULSEStyleGAN2(PULSE):
 
     def load_synthesis_network(self):
         self.synthesis = Generator(size=256, style_dim=512, n_mlp=8).cuda()
-        self.synthesis.load_state_dict(torch.load('experiments/pretrained/stylegan2.pt')['g_ema'], strict=False)
+        self.synthesis.load_state_dict(torch.load("experiments/pretrained/stylegan2.pt")["g_ema"], strict=False)
 
     def initialize_mapping_network(self):
         if Path("experiments/pretrained/gaussian_fit_stylegan2.pt").exists():
@@ -29,9 +29,8 @@ class PULSEStyleGAN2(PULSE):
                 if self.verbose:
                     print('\tSaved "gaussian_fit_stylegan2.pt"')
 
-
     def initialize_latent_space(self):
-        batch_size = self.opt['batch_size']
+        batch_size = self.opt["batch_size"]
 
         # Generate latent tensor
         if self.opt["tile_latent"]:
