@@ -13,6 +13,8 @@ class PULSEStyleGAN2(PULSE):
     def load_synthesis_network(self):
         self.synthesis = Generator(size=256, style_dim=512, n_mlp=8).cuda()
         self.synthesis.load_state_dict(torch.load("experiments/pretrained/stylegan2.pt")["g_ema"], strict=False)
+        for v in self.synthesis.parameters():
+            v.requires_grad = False
 
     def initialize_mapping_network(self):
         if Path("experiments/pretrained/gaussian_fit_stylegan2.pt").exists():
