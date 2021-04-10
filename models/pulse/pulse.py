@@ -32,21 +32,6 @@ class PULSE(torch.nn.Module):
 
         self.initialize_mapping_network()
 
-    def initialize_mapping_network(self):
-        if Path("experiments/pretrained/gaussian_fit.pt").exists():
-            self.gaussian_fit = torch.load("experiments/pretrained/gaussian_fit.pt")
-        else:
-            if self.verbose:
-                print("\tRunning Mapping Network")
-            with torch.no_grad():
-                torch.manual_seed(0)
-                latent = torch.randn((1000000, 512), dtype=torch.float32, device="cuda")
-                latent_out = torch.nn.LeakyReLU(5)(self.synthesis.get_latent(latent))
-                self.gaussian_fit = {"mean": latent_out.mean(0), "std": latent_out.std(0)}
-                torch.save(self.gaussian_fit, "experiments/pretrained/gaussian_fit.pt")
-                if self.verbose:
-                    print('\tSaved "gaussian_fit.pt"')
-
     def initialize_dip(self):
         self.dip_zk = util.get_noise(64, "noise", (64, 64)).cuda().detach()
         self.k_dip = KernelDIP(self.opt["KernelDIP"]).cuda()

@@ -1,4 +1,5 @@
 import torch
+from pathlib import Path
 
 from models.pulse.pulse import PULSE
 from models.pulse.stylegan2 import Generator
@@ -12,6 +13,22 @@ class PULSEStyleGAN2(PULSE):
     def load_synthesis_network(self):
         self.synthesis = Generator(size=256, style_dim=512, n_mlp=8).cuda()
         self.synthesis.load_state_dict(torch.load('experiments/pretrained/stylegan2.pt')['g_ema'], strict=False)
+
+    def initialize_mapping_network(self):
+        if Path("experiments/pretrained/gaussian_fit_stylegan2.pt").exists():
+            self.gaussian_fit = torch.load("experiments/pretrained/gaussian_fit_stylegan2.pt")
+        else:
+            if self.verbose:
+                print("\tRunning Mapping Network")
+            with torch.no_grad():
+                torch.manual_seed(0)
+                latent = torch.randn((1000000, 512), dtype=torch.float32, device="cuda")
+                latent_out = torch.nn.LeakyReLU(5)(self.synthesis.get_latent(latent))
+                self.gaussian_fit = {"mean": latent_out.mean(0), "std": latent_out.std(0)}
+                torch.save(self.gaussian_fit, "experiments/pretrained/gaussian_fit_stylegan2.pt")
+                if self.verbose:
+                    print('\tSaved "gaussian_fit_stylegan2.pt"')
+
 
     def initialize_latent_space(self):
         batch_size = self.opt['batch_size']
