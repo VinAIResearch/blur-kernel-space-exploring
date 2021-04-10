@@ -2,7 +2,7 @@
 
 ## About the project
 
-This repository is the official pytorch implementation of the CVPR'21 paper: 
+This repository is the official pytorch implementation of the [CVPR'21 paper](https://arxiv.org/abs/2104.00317): 
 
 **Explore Image Deblurring via Encoded Blur Kernel Space.** \
 P. Tran, A. Tran, Q. Phung, M. Hoai (2021) \
@@ -40,15 +40,7 @@ conda install --file requirements.txt
 
 ```
 
-<!--
-``` diff
-- Please specify how to install the dependency libraries after installing pytorch line. 
-
-```
--->
-
 ### Using the pre-trained model
-
 
 <!--
 ``` diff
@@ -59,20 +51,16 @@ conda install --file requirements.txt
 -->
 To deblur an image using a pretrained model, use the following command:
 ``` sh
-python deblur_image --model_path=experiments/pretrained/GOPRO_woVAE.pth --LQ_img=imgs/blur_imgs/blur1.png
+python deblur.py --image_path=imgs/blur_imgs/blur01.png --yml_path options/deblur.yml --save_path sharp01.png
 ```
 
 
 ## Training and evaluation
-### Preparing datasets
-The REDS dataset can be downloaded [here](https://seungjunnah.github.io/Datasets/reds.html), or by executing `scripts/download_REDS.py`.
+### Preparing datasets and pretrained models
+You can find the datasets and pretrained models in model zoo section. You can also use `scripts/download_GOPRO.py` and `scripts/download_REDS.py` to download the datasets directly.
 
-The GOPRO dataset can be downloaded [here](https://seungjunnah.github.io/Datasets/gopro), or executing `scripts/download_GOPRO.py`.
-
-After downloading the datasets, you can use `scripts/create_lmdb.py` to generate lmdb dataset.
 
 ### Training
-You can train your model using the following command:
 To train the model, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
 python train.py -opt path_to_yaml_file
@@ -109,7 +97,7 @@ python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \\
 #### Image Deblurring
 To deblur a blurry image, use the following command:
 ```sh
-python deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/deblur.yml
+python deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/deblur.yml --save_path res.png
 ```
 
 ![Image deblurring examples](imgs/results/general_deblurring.jpg)
