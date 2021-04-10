@@ -32,16 +32,17 @@ class Images(Dataset):
 parser = argparse.ArgumentParser(description="PULSE")
 
 # I/O arguments
-parser.add_argument("-input_dir", type=str, default="imgs/blur_faces", help="input data directory")
-parser.add_argument("-output_dir", type=str, default="experiments/pulse/results", help="output data directory")
+parser.add_argument("--input_dir", type=str, default="imgs/blur_faces", help="input data directory")
+parser.add_argument("--output_dir", type=str, default="experiments/pulse/results", help="output data directory")
 parser.add_argument(
     "-cache_dir", type=str, default="experiments/pulse/cache", help="cache directory for model weights"
 )
-
-with open("options/pulse.yml", "rb") as f:
-    opt = yaml.safe_load(f)
+parser.add_argument("--yml_path", type=str, default="options/pulse/stylegan2.yml", help="configuration file")
 
 kwargs = vars(parser.parse_args())
+
+with open(kwargs["yml_path"], "rb") as f:
+    opt = yaml.safe_load(f)
 
 dataset = Images(kwargs["input_dir"], duplicates=opt["duplicates"])
 out_path = Path(kwargs["output_dir"])
