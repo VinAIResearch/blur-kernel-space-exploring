@@ -86,4 +86,83 @@ where `path_to_yaml_file` is the path to yaml file that contains training config
 To augment a given dataset, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
 python data_augmentation.py --target_H=720 --target_W=1280 \
-			
+			    --source_H=720 --source_W=1280\
+			    --augmented_H=256 --augmented_W=256\
+                            --model_path=experiments/pretrained/GOPRO_woVAE.pth \
+                            --source_LQ_root=datasets/GOPRO/test_blur.lmdb \
+                            --source_HQ_root=datasets/GOPRO/test_sharp.lmdb \
+			    --target_HQ_root=datasets/GOPRO/test_sharp.lmdb \
+                            --save_path=results/GOPRO_augmented \
+                            --num_images=10 \
+                            --yml_path=options/GOPRO/woVAE.yml
+```
+`augmented_H` and `augmented_W` is the desired shape of the augmented images, `source_LQ_root` and `source_HQ_root` is the path of the lmdb folders that were created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
+
+![Data augmentation examples](imgs/results/augmentation.jpg)
+
+#### Generate novel blur kernels
+To generate a blur image given a sharp image, use the following command:
+```sh
+python generate_blur.py --model_path=experiments/pretrained/GOPRO_wVAE.pth \
+		        --yml_path=options/GOPRO/wVAE.yml \
+		        --image_path=imgs/sample_sharp.png \
+			--save_path='blur.png'
+```
+**Note**: This only works with models that were trained with `--VAE` flag.
+![kernel generating examples](imgs/results/generate_blur.jpg)
+
+#### Generic Deblurring
+To deblur a blurry image, use the following command:
+```sh
+python generic_deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/deblur.yml --save_path res.png
+```
+
+![Image deblurring examples](imgs/results/general_deblurring.jpg)
+
+#### Deblurring using sharp image prior
+[mapping]: https://drive.google.com/uc?id=14R6iHGf5iuVx3DMNsACAl7eBr7Vdpd0k
+[synthesis]: https://drive.google.com/uc?id=1TCViX1YpQyRsklTVYEJwdbmK91vklCo8
+[pretrained model]: https://drive.google.com/file/d/1PQutd-JboOCOZqmd95XWxWrO8gGEvRcO/view
+First, you need to download the pre-trained styleGAN or styleGAN2 networks. If you want to use styleGAN, download the [mapping] and [synthesis] network, then rename and copy them to `experiments/pretrained/stylegan_mapping.pt` and `experiments/pretrained/stylegan_synthesis.pt` respectively. If you want to use styleGAN2 instead, download the [pretrained model], then rename and copy it to `experiments/pretrained/stylegan2.pt`.
+
+To deblur and blurry image using a latent space as sharp image prior, you can use one of the following commands:
+```sh
+python domain_specific_deblur.py --input_dir imgs/blur_faces \
+		    --output_dir experiments/domain_specific_deblur/results \
+		    --yml_path options/domain_specific_deblur/stylegan.yml  # Use latent space of stylegan
+python domain_specific_deblur.py --input_dir imgs/blur_faces \
+		    --output_dir experiments/domain_specific_deblur/results \
+		    --yml_path options/domain_specific_deblur/stylegan2.yml  # Use latent space of stylegan2
+```
+Results will be saved in `experiments/domain_specific_deblur/results` folder.
+
+![PULSE-like Deblurring examples](imgs/results/domain_specific_deblur.jpg)
+
+## Model Zoo
+Pretrained models can be downloaded here.
+
+
+[REDS]: https://seungjunnah.github.io/Datasets/reds.html
+[GOPRO]: https://seungjunnah.github.io/Datasets/gopro
+
+[REDS woVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/REDS_woVAE.pth
+[GOPRO woVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/GOPRO_woVAE.pth
+[GOPRO wVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/GOPRO_wVAE.pth
+[GOPRO + REDS woVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/mix_woVAE.pth
+
+|Model name              | dataset(s)      | status                   |
+|:-----------------------|:---------------:|-------------------------:|
+|[REDS woVAE]            | [REDS]          | :heavy_check_mark:       |
+|[GOPRO woVAE]           | [GOPRO]         | :heavy_check_mark:       |
+|[GOPRO wVAE]            | [GOPRO]         | :heavy_check_mark:       |
+|[GOPRO + REDS woVAE]    | [GOPRO], [REDS] | :heavy_check_mark:       |
+
+
+## Notes and references
+The training code is borrowed from the EDVR project: https://github.com/xinntao/EDVR
+
+The backbone code is borrowed from the DeblurGAN project: https://github.com/KupynOrest/DeblurGAN
+
+The stylegan code is borrowed from the PULSE project: https://github.com/adamian98/pulse
+
+The stylegan2 code is borrowed from https://github.com/rosinality/stylegan2-pytorch
