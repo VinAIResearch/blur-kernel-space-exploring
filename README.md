@@ -72,24 +72,28 @@ where `path_to_yaml_file` is the path to yaml file that contains training config
 #### Data augmentation
 To augment a given dataset, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
-python test_data_augmentation.py --target_H=256 --target_W=256 \
-                                 --model_path=experiments/pretrained/GOPRO_woVAE.pth \
-                                 --LQ_root=datasets/GOPRO/train_blur.lmdb \
-                                 --HQ_root=datasets/GOPRO/sharp_blur.lmdb \
-                                 --save_path=results/GOPRO_augmented \
-                                 --num_images=10000 \
-                                 --yml_path=options/GOPRO/woVAE.yml
+python data_augmentation.py --target_H=720 --target_W=1280 \
+			    --source_H=720 --source_W=1280\
+			    --augmented_H=256 --augmented_W=256\
+                            --model_path=experiments/pretrained/GOPRO_woVAE.pth \
+                            --source_LQ_root=datasets/GOPRO/test_blur.lmdb \
+                            --source_HQ_root=datasets/GOPRO/test_sharp.lmdb \
+			    --target_HQ_root=datasets/GOPRO/test_sharp.lmdb \
+                            --save_path=results/GOPRO_augmented \
+                            --num_images=10 \
+                            --yml_path=options/GOPRO/woVAE.yml
 ```
-`target_H` and `target_W` is the desired shape of the augmented images, `LQ_root` and `HQ_root` is the path of the lmdb dataset that was created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
+`augmented_H` and `augmented_W` is the desired shape of the augmented images, `source_LQ_root` and `source_HQ_root` is the path of the lmdb folders that were created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
 
 ![Data augmentation examples](imgs/results/augmentation.jpg)
 
 #### Generate novel blur kernels
 To generate a blur image given a sharp image, use the following command:
 ```sh
-python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \
-		     --yml_path=options/GOPRO/wVAE.yml \
-		     --image_path=imgs/sample_sharp.png
+python generate_blur.py --model_path=experiments/pretrained/GOPRO_wVAE.pth \
+		        --yml_path=options/GOPRO/wVAE.yml \
+		        --image_path=imgs/sample_sharp.png \
+			--save_path='blur.png'
 ```
 **Note**: This only works with models that were trained with `--VAE` flag.
 ![kernel generating examples](imgs/results/generate_blur.jpg)
