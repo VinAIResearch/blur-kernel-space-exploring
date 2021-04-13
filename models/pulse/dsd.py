@@ -6,14 +6,14 @@ import torch
 import torch.nn as nn
 import utils.util as util
 from models.dips import KernelDIP
-from models.pulse.spherical_optimizer import SphericalOptimizer
+from models.dsd.spherical_optimizer import SphericalOptimizer
 from torch.optim.lr_scheduler import StepLR
 from tqdm import tqdm
 
 
-class PULSE(torch.nn.Module):
+class DSD(torch.nn.Module):
     def __init__(self, opt, cache_dir):
-        super(PULSE, self).__init__()
+        super(DSD, self).__init__()
 
         self.opt = opt
 

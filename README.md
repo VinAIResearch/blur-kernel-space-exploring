@@ -51,7 +51,7 @@ conda install --file requirements.txt
 -->
 To deblur an image using a pretrained model, use the following command:
 ``` sh
-python deblur.py --image_path=imgs/blur_imgs/blur1.png --yml_path options/deblur.yml --save_path sharp01.png
+python generic_deblur.py --image_path=imgs/blur_imgs/blur1.png --yml_path options/generic_deblur.yml --save_path sharp01.png
 ```
 
 
@@ -61,7 +61,9 @@ You can find the datasets and pretrained models in model zoo section. You can al
 
 
 ### Training
-To train the model, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
+To do image deblurring, data augmentation, and blur generation, you first need to train the blur encoding network (The F function in the paper). This is the only network that you need to train.
+
+To train the network, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
 python train.py -opt path_to_yaml_file
 ```
@@ -98,22 +100,32 @@ python generate_blur.py --model_path=experiments/pretrained/GOPRO_wVAE.pth \
 **Note**: This only works with models that were trained with `--VAE` flag.
 ![kernel generating examples](imgs/results/generate_blur.jpg)
 
-#### Image Deblurring
+#### Generic Deblurring
 To deblur a blurry image, use the following command:
 ```sh
-python deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/deblur.yml --save_path res.png
+python generic_deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/deblur.yml --save_path res.png
 ```
 
 ![Image deblurring examples](imgs/results/general_deblurring.jpg)
 
-#### PULSE-like Deblurring
-To deblur and blurry image using a latent space as sharp image prior, use the following command:
-```sh
-python run_pulse.py -input_dir imgs/blur_faces -output_dir experiments/pulse/results
-```
-Results will be saved in `experiments/pulse/results` folder.
+#### Deblurring using sharp image prior
+[mapping]: https://drive.google.com/uc?id=1TCViX1YpQyRsklTVYEJwdbmK91vklCo8
+[synthesis]: https://drive.google.com/uc?id=14R6iHGf5iuVx3DMNsACAl7eBr7Vdpd0k
+[pretrained model]: https://drive.google.com/file/d/1PQutd-JboOCOZqmd95XWxWrO8gGEvRcO/view
+First, you need to download pretrained styleGAN or styleGAN2 network. If you want to use styleGAN, download the [mapping] and [synthesis] network, then rename and copy them to `experiments/pretrained/stylegan_mapping.pt` and `experiments/pretrained/stylegan_synthesis.pt` respectively. If you want to use styleGAN2 instead, download the [pretrained model], then rename and copy it to `experiments/pretrained/stylegan2.pt`.
 
-![PULSE-like Deblurring examples](imgs/results/pulse.jpg)
+To deblur and blurry image using a latent space as sharp image prior, you can use one of the following commands:
+```sh
+python domain_specific_deblur.py --input_dir imgs/blur_faces \
+		    --output_dir experiments/domain_specific_deblur/results \
+		    --yml_path options/domain_specific_deblur/stylegan.yml  # Use latent space of stylegan
+python domain_specific_deblur.py --input_dir imgs/blur_faces \
+		    --output_dir experiments/domain_specific_deblur/results \
+		    --yml_path options/domain_specific_deblur/stylegan2.yml  # Use latent space of stylegan2
+```
+Results will be saved in `experiments/domain_specific_deblur/results` folder.
+
+![PULSE-like Deblurring examples](imgs/results/domain_specific_deblur.jpg)
 
 ## Model Zoo
 Pretrained models can be downloaded here.

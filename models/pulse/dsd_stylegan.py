@@ -1,14 +1,14 @@
 from pathlib import Path
 
 import torch
-from models.losses.pulse_loss import LossBuilderStyleGAN
-from models.pulse.pulse import PULSE
-from models.pulse.stylegan import G_synthesis, G_mapping
+from models.losses.dsd_loss import LossBuilderStyleGAN
+from models.dsd.dsd import DSD
+from models.dsd.stylegan import G_synthesis, G_mapping
 
 
-class PULSEStyleGAN(PULSE):
+class DSDStyleGAN(DSD):
     def __init__(self, opt, cache_dir):
-        super(PULSEStyleGAN, self).__init__(opt, cache_dir)
+        super(DSDStyleGAN, self).__init__(opt, cache_dir)
 
     def load_synthesis_network(self):
         self.synthesis = G_synthesis().cuda()

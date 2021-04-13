@@ -33,11 +33,11 @@ parser = argparse.ArgumentParser(description="PULSE")
 
 # I/O arguments
 parser.add_argument("--input_dir", type=str, default="imgs/blur_faces", help="input data directory")
-parser.add_argument("--output_dir", type=str, default="experiments/pulse/results", help="output data directory")
+parser.add_argument("--output_dir", type=str, default="experiments/domain_specific_deblur/results", help="output data directory")
 parser.add_argument(
-    "-cache_dir", type=str, default="experiments/pulse/cache", help="cache directory for model weights"
+    "--cache_dir", type=str, default="experiments/domain_specific_deblur/cache", help="cache directory for model weights"
 )
-parser.add_argument("--yml_path", type=str, default="options/pulse/stylegan2.yml", help="configuration file")
+parser.add_argument("--yml_path", type=str, default="options/domain_specific_deblur/stylegan2.yml", help="configuration file")
 
 kwargs = vars(parser.parse_args())
 
@@ -51,13 +51,13 @@ out_path.mkdir(parents=True, exist_ok=True)
 dataloader = DataLoader(dataset, batch_size=opt["batch_size"])
 
 if opt["stylegan_ver"] == 1:
-    from models.pulse.pulse_stylegan import PULSEStyleGAN
+    from models.dsd.dsd_stylegan import DSDStyleGAN
 
-    model = PULSEStyleGAN(opt=opt, cache_dir=kwargs["cache_dir"])
+    model = DSDStyleGAN(opt=opt, cache_dir=kwargs["cache_dir"])
 else:
-    from models.pulse.pulse_stylegan2 import PULSEStyleGAN2
+    from models.dsd.dsd_stylegan2 import DSDStyleGAN2
 
-    model = PULSEStyleGAN2(opt=opt, cache_dir=kwargs["cache_dir"])
+    model = DSDStyleGAN2(opt=opt, cache_dir=kwargs["cache_dir"])
 
 model = DataParallel(model)
 
