@@ -2,13 +2,24 @@
 
 ## About the project
 
-This repository is the official pytorch implementation of the [CVPR'21 paper](https://arxiv.org/abs/2104.00317): 
+We introduce a method to encode the blur operators of an arbitrary dataset of sharp-blur image pairs into a blur kernel space. Assuming the encoded kernel space is close enough to in-the-wild blur operators, we propose an alternating optimization algorithm for blind image deblurring. It approximates an unseen blur operator by a kernel in the encoded space and searches for the corresponding sharp image. Due to the method's design, the encoded kernel space is fully differentiable, thus can be easily adopted in deep neural network models.
 
+![Blur kernel space](imgs/teaser.jpg)
+
+Detail of the method and experimental results can be found in [our following paper](https://arxiv.org/abs/2104.00317):
+```
 **Explore Image Deblurring via Encoded Blur Kernel Space.** \
 P. Tran, A. Tran, Q. Phung, M. Hoai (2021) \
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 
 
-![Blur kernel space](imgs/teaser.jpg)
+@inproceedings{m_Tran-etal-CVPR21, \
+  author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai}, \
+  title = {Explore Image Deblurring via Encoded Blur Kernel Space}, \
+  year = {2021}, \
+  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)} \
+}
+```
+Please CITE our paper whenever this repository is used to help produce published results or incorporated into other software.
 
 ## Table of Content 
 
@@ -109,8 +120,8 @@ python generic_deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path option
 ![Image deblurring examples](imgs/results/general_deblurring.jpg)
 
 #### Deblurring using sharp image prior
-[mapping]: https://drive.google.com/uc?id=1TCViX1YpQyRsklTVYEJwdbmK91vklCo8
-[synthesis]: https://drive.google.com/uc?id=14R6iHGf5iuVx3DMNsACAl7eBr7Vdpd0k
+[mapping]: https://drive.google.com/uc?id=14R6iHGf5iuVx3DMNsACAl7eBr7Vdpd0k
+[synthesis]: https://drive.google.com/uc?id=1TCViX1YpQyRsklTVYEJwdbmK91vklCo8
 [pretrained model]: https://drive.google.com/file/d/1PQutd-JboOCOZqmd95XWxWrO8gGEvRcO/view
 First, you need to download pretrained styleGAN or styleGAN2 network. If you want to use styleGAN, download the [mapping] and [synthesis] network, then rename and copy them to `experiments/pretrained/stylegan_mapping.pt` and `experiments/pretrained/stylegan_synthesis.pt` respectively. If you want to use styleGAN2 instead, download the [pretrained model], then rename and copy it to `experiments/pretrained/stylegan2.pt`.
 
@@ -152,20 +163,6 @@ The training code is borrowed from EDVR project: https://github.com/xinntao/EDVR
 
 The backbone code is borrowed from DeblurGAN project: https://github.com/KupynOrest/DeblurGAN
 
-## Citation
+The stylegan code is borrowed from PULSE project: https://github.com/adamian98/pulse
 
-If you find this code useful, please cite: 
-
-```
-**Explore Image Deblurring via Encoded Blur Kernel Space.** \
-P. Tran, A. Tran, Q. Phung, M. Hoai (2021) \
-IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 
-
-@inproceedings{m_Tran-etal-CVPR21, \
-  author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai}, \
-  title = {Explore Image Deblurring via Encoded Blur Kernel Space}, \
-  year = {2021}, \
-  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)} \
-}
-```
-
+The stylegan2 code is borrowed from https://github.com/rosinality/stylegan2-pytorch
