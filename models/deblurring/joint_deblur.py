@@ -56,8 +56,8 @@ class JointDeblur(ImageDeblur):
             self.k_optimizer.step()
 
             # debugging
-            if step % 100 == 0:
-                print(torch.norm(k), step)
-                print(f"{self.k_optimizer.param_groups[0]['lr']:.3e}")
+            # if step % 100 == 0:
+            #     print(torch.norm(k))
+            #     print(f"{self.k_optimizer.param_groups[0]['lr']:.3e}")
 
         return util.tensor2img(x.detach())
