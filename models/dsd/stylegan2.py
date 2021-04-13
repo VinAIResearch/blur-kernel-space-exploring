@@ -2,7 +2,7 @@ import math
 import random
 
 import torch
-from models.pulse.op import FusedLeakyReLU, fused_leaky_relu, upfirdn2d
+from models.dsd.op import FusedLeakyReLU, fused_leaky_relu, upfirdn2d
 from torch import nn
 from torch.nn import functional as F
 
@@ -104,7 +104,13 @@ class EqualConv2d(nn.Module):
             self.bias = None
 
     def forward(self, input):
-        out = F.conv2d(input, self.weight * self.scale, bias=self.bias, stride=self.stride, padding=self.padding,)
+        out = F.conv2d(
+            input,
+            self.weight * self.scale,
+            bias=self.bias,
+            stride=self.stride,
+            padding=self.padding,
+        )
 
         return out
 
@@ -327,7 +333,13 @@ class ToRGB(nn.Module):
 
 class Generator(nn.Module):
     def __init__(
-        self, size, style_dim, n_mlp, channel_multiplier=2, blur_kernel=[1, 3, 3, 1], lr_mlp=0.01,
+        self,
+        size,
+        style_dim,
+        n_mlp,
+        channel_multiplier=2,
+        blur_kernel=[1, 3, 3, 1],
+        lr_mlp=0.01,
     ):
         super().__init__()
 
@@ -377,7 +389,14 @@ class Generator(nn.Module):
             out_channel = self.channels[2 ** i]
 
             self.convs.append(
-                StyledConv(in_channel, out_channel, 3, style_dim, upsample=True, blur_kernel=blur_kernel,)
+                StyledConv(
+                    in_channel,
+                    out_channel,
+                    3,
+                    style_dim,
+                    upsample=True,
+                    blur_kernel=blur_kernel,
+                )
             )
 
             self.convs.append(StyledConv(out_channel, out_channel, 3, style_dim, blur_kernel=blur_kernel))
@@ -508,7 +527,12 @@ class ConvLayer(nn.Sequential):
 
         layers.append(
             EqualConv2d(
-                in_channel, out_channel, kernel_size, padding=self.padding, stride=stride, bias=bias and not activate,
+                in_channel,
+                out_channel,
+                kernel_size,
+                padding=self.padding,
+                stride=stride,
+                bias=bias and not activate,
             )
         )
 
@@ -573,7 +597,8 @@ class Discriminator(nn.Module):
 
         self.final_conv = ConvLayer(in_channel + 1, channels[4], 3)
         self.final_linear = nn.Sequential(
-            EqualLinear(channels[4] * 4 * 4, channels[4], activation="fused_lrelu"), EqualLinear(channels[4], 1),
+            EqualLinear(channels[4] * 4 * 4, channels[4], activation="fused_lrelu"),
+            EqualLinear(channels[4], 1),
         )
 
     def forward(self, input):

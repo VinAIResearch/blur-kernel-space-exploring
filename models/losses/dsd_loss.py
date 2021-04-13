@@ -1,7 +1,7 @@
 import torch
+from models.dsd.bicubic import BicubicDownSample
 from models.kernel_encoding.kernel_wizard import KernelWizard
 from models.losses.ssim_loss import SSIM
-from models.pulse.bicubic import BicubicDownSample
 
 
 class LossBuilder(torch.nn.Module):

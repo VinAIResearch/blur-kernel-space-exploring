@@ -33,11 +33,18 @@ parser = argparse.ArgumentParser(description="PULSE")
 
 # I/O arguments
 parser.add_argument("--input_dir", type=str, default="imgs/blur_faces", help="input data directory")
-parser.add_argument("--output_dir", type=str, default="experiments/domain_specific_deblur/results", help="output data directory")
 parser.add_argument(
-    "--cache_dir", type=str, default="experiments/domain_specific_deblur/cache", help="cache directory for model weights"
+    "--output_dir", type=str, default="experiments/domain_specific_deblur/results", help="output data directory"
 )
-parser.add_argument("--yml_path", type=str, default="options/domain_specific_deblur/stylegan2.yml", help="configuration file")
+parser.add_argument(
+    "--cache_dir",
+    type=str,
+    default="experiments/domain_specific_deblur/cache",
+    help="cache directory for model weights",
+)
+parser.add_argument(
+    "--yml_path", type=str, default="options/domain_specific_deblur/stylegan2.yml", help="configuration file"
+)
 
 kwargs = vars(parser.parse_args())
 

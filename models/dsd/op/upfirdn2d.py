@@ -9,7 +9,10 @@ from torch.utils.cpp_extension import load
 module_path = os.path.dirname(__file__)
 upfirdn2d_op = load(
     "upfirdn2d",
-    sources=[os.path.join(module_path, "upfirdn2d.cpp"), os.path.join(module_path, "upfirdn2d_kernel.cu"),],
+    sources=[
+        os.path.join(module_path, "upfirdn2d.cpp"),
+        os.path.join(module_path, "upfirdn2d_kernel.cu"),
+    ],
 )
 
 
@@ -24,7 +27,16 @@ class UpFirDn2dBackward(Function):
         grad_output = grad_output.reshape(-1, out_size[0], out_size[1], 1)
 
         grad_input = upfirdn2d_op.upfirdn2d(
-            grad_output, grad_kernel, down_x, down_y, up_x, up_y, g_pad_x0, g_pad_x1, g_pad_y0, g_pad_y1,
+            grad_output,
+            grad_kernel,
+            down_x,
+            down_y,
+            up_x,
+            up_y,
+            g_pad_x0,
+            g_pad_x1,
+            g_pad_y0,
+            g_pad_y1,
         )
         grad_input = grad_input.view(in_size[0], in_size[1], in_size[2], in_size[3])
 
@@ -110,7 +122,15 @@ class UpFirDn2d(Function):
         kernel, grad_kernel = ctx.saved_tensors
 
         grad_input = UpFirDn2dBackward.apply(
-            grad_output, kernel, grad_kernel, ctx.up, ctx.down, ctx.pad, ctx.g_pad, ctx.in_size, ctx.out_size,
+            grad_output,
+            kernel,
+            grad_kernel,
+            ctx.up,
+            ctx.down,
+            ctx.pad,
+            ctx.g_pad,
+            ctx.in_size,
+            ctx.out_size,
         )
 
         return grad_input, None, None, None, None
@@ -139,7 +159,10 @@ def upfirdn2d_native(input, kernel, up_x, up_y, down_x, down_y, pad_x0, pad_x1, 
 
     out = F.pad(out, [0, 0, max(pad_x0, 0), max(pad_x1, 0), max(pad_y0, 0), max(pad_y1, 0)])
     out = out[
-        :, max(-pad_y0, 0) : out.shape[1] - max(-pad_y1, 0), max(-pad_x0, 0) : out.shape[2] - max(-pad_x1, 0), :,
+        :,
+        max(-pad_y0, 0) : out.shape[1] - max(-pad_y1, 0),
+        max(-pad_x0, 0) : out.shape[2] - max(-pad_x1, 0),
+        :,
     ]
 
     out = out.permute(0, 3, 1, 2)
@@ -147,7 +170,10 @@ def upfirdn2d_native(input, kernel, up_x, up_y, down_x, down_y, pad_x0, pad_x1, 
     w = torch.flip(kernel, [0, 1]).view(1, 1, kernel_h, kernel_w)
     out = F.conv2d(out, w)
     out = out.reshape(
-        -1, minor, in_h * up_y + pad_y0 + pad_y1 - kernel_h + 1, in_w * up_x + pad_x0 + pad_x1 - kernel_w + 1,
+        -1,
+        minor,
+        in_h * up_y + pad_y0 + pad_y1 - kernel_h + 1,
+        in_w * up_x + pad_x0 + pad_x1 - kernel_w + 1,
     )
     out = out.permute(0, 2, 3, 1)
     out = out[:, ::down_y, ::down_x, :]

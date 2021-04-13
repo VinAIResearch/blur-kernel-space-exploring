@@ -16,7 +16,7 @@ def main():
     parser.add_argument("--image_path", action="store", help="image path", type=str, required=True)
     parser.add_argument("--model_path", action="store", help="model path", type=str, required=True)
     parser.add_argument("--yml_path", action="store", help="yml path", type=str, required=True)
-    parser.add_argument("--save_path", action="store", help="save path", type=str, default='blur.png')
+    parser.add_argument("--save_path", action="store", help="save path", type=str, default="blur.png")
 
     args = parser.parse_args()
 

@@ -420,6 +420,7 @@ class G_synthesis(nn.Module):
         for res in range(2, resolution_log2 + 1):
             channels = nf(res - 1)
             name = "{s}x{s}".format(s=2 ** res)
+            last_channels = channels
             if res == 2:
                 blocks.append(
                     (
@@ -458,14 +459,12 @@ class G_synthesis(nn.Module):
                         ),
                     )
                 )
-            last_channels = channels
         self.torgb = MyConv2d(channels, num_channels, 1, gain=1, use_wscale=use_wscale)
         self.blocks = nn.ModuleDict(OrderedDict(blocks))
 
     def forward(self, dlatents_in, noise_in):
         # Input: Disentangled latents (W) [minibatch, num_layers, dlatent_size].
         # lod_in = tf.cast(tf.get_variable('lod', initializer=np.float32(0), trainable=False), dtype)
-        batch_size = dlatents_in.size(0)
         for i, m in enumerate(self.blocks.values()):
             if i == 0:
                 x = m(dlatents_in[:, 2 * i : 2 * i + 2], noise_in[2 * i : 2 * i + 2])

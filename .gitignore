@@ -6,6 +6,5 @@
 !imgs/**
 experiments/pretrained/*
 !experiments/pretrained/kernel.pth
-!experiments/pretrained/gaussian_fit.pt
 results/*
 datasets/*
