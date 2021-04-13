@@ -51,7 +51,7 @@ conda install --file requirements.txt
 -->
 To deblur an image using a pretrained model, use the following command:
 ``` sh
-python deblur.py --image_path=imgs/blur_imgs/blur01.png --yml_path options/deblur.yml --save_path sharp01.png
+python deblur.py --image_path=imgs/blur_imgs/blur1.png --yml_path options/deblur.yml --save_path sharp01.png
 ```
 
 
@@ -72,12 +72,12 @@ where `path_to_yaml_file` is the path to yaml file that contains training config
 #### Data augmentation
 To augment a given dataset, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
 ```
-python test_data_augmentation.py --target_H=256 --target_W=256 \\
-                                 --model_path=experiments/pretrained/GOPRO_woVAE.pth \\
-                                 --LQ_root=datasets/GOPRO/train_blur.lmdb \\
-                                 --HQ_root=datasets/GOPRO/sharp_blur.lmdb \\
-                                 --save_path=results/GOPRO_augmented \\
-                                 --num_images=10000\\
+python test_data_augmentation.py --target_H=256 --target_W=256 \
+                                 --model_path=experiments/pretrained/GOPRO_woVAE.pth \
+                                 --LQ_root=datasets/GOPRO/train_blur.lmdb \
+                                 --HQ_root=datasets/GOPRO/sharp_blur.lmdb \
+                                 --save_path=results/GOPRO_augmented \
+                                 --num_images=10000 \
                                  --yml_path=options/GOPRO/woVAE.yml
 ```
 `target_H` and `target_W` is the desired shape of the augmented images, `LQ_root` and `HQ_root` is the path of the lmdb dataset that was created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
@@ -87,8 +87,8 @@ python test_data_augmentation.py --target_H=256 --target_W=256 \\
 #### Generate novel blur kernels
 To generate a blur image given a sharp image, use the following command:
 ```sh
-python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \\
-		     --yml_path=options/GOPRO/wVAE.yml \\
+python generate_blur --model_path=experiments/pretrained/GOPRO_wVAE.pth \
+		     --yml_path=options/GOPRO/wVAE.yml \
 		     --image_path=imgs/sample_sharp.png
 ```
 **Note**: This only works with models that were trained with `--VAE` flag.
