@@ -8,15 +8,15 @@ We introduce a method to encode the blur operators of an arbitrary dataset of sh
 
 Detail of the method and experimental results can be found in [our following paper](https://arxiv.org/abs/2104.00317):
 ```
-**Explore Image Deblurring via Encoded Blur Kernel Space.** \
-P. Tran, A. Tran, Q. Phung, M. Hoai (2021) \
+Explore Image Deblurring via Encoded Blur Kernel Space.
+P. Tran, A. Tran, Q. Phung, M. Hoai (2021) 
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 
 
-@inproceedings{m_Tran-etal-CVPR21, \
-  author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai}, \
-  title = {Explore Image Deblurring via Encoded Blur Kernel Space}, \
-  year = {2021}, \
-  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)} \
+@inproceedings{m_Tran-etal-CVPR21, 
+  author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai}, 
+  title = {Explore Image Deblurring via Encoded Blur Kernel Space}, 
+  year = {2021}, 
+  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)} 
 }
 ```
 Please CITE our paper whenever this repository is used to help produce published results or incorporated into other software.
