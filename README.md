@@ -8,10 +8,6 @@ We introduce a method to encode the blur operators of an arbitrary dataset of sh
 
 Detail of the method and experimental results can be found in [our following paper](https://arxiv.org/abs/2104.00317):
 ```
-Explore Image Deblurring via Encoded Blur Kernel Space.
-P. Tran, A. Tran, Q. Phung, M. Hoai (2021) 
-IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 
-
 @inproceedings{m_Tran-etal-CVPR21, 
   author = {Phong Tran and Anh Tran and Quynh Phung and Minh Hoai}, 
   title = {Explore Image Deblurring via Encoded Blur Kernel Space}, 
@@ -48,74 +44,84 @@ cd blur-kernel-space-exploring
 conda create -n BlurKernelSpace -y python=3.7
 conda activate BlurKernelSpace
 conda install --file requirements.txt
-
 ```
 
 ### Using the pre-trained model
-
-<!--
-``` diff
-- Please specify a very simple one-line command to use a pre-trained model to deblur an image. You might need to specify how to download the pre-trained model in the first place. Use the best generic model that you have. 
-- You might want to provide a sample input image and a sample output image. People can run this simple command to reproduce the output image and compare it with the provided out to verify that they have installed your code successfully. 
-
-```
--->
-To deblur an image using a pre-trained model, use the following command:
+To deblur an image using a pre-trained model, first, download the pretrained model in [model zoo section](#model-zoo). In the yaml file, change the value of `KernelWizard/pretrained` to the path of the downloaded file. Then use the following command:
 ``` sh
-python generic_deblur.py --image_path=imgs/blur_imgs/blur1.png --yml_path options/generic_deblur.yml --save_path sharp01.png
+python generic_deblur.py --image_path=imgs/blur_imgs/blur1.png --yml_path options/generic_deblur/default.yml --save_path ./sharp01.png
 ```
+The model will deblur the image given in `image_path` and save the result to `./sharp01.png`. You can also change number of iterations, learning rates, and the network structure in the yaml file.
 
 
 ## Training and evaluation
 ### Preparing datasets and pre-trained models
-You can find the datasets and pre-trained models in the model zoo section. You can also use `scripts/download_GOPRO.py` and `scripts/download_REDS.py` to download the datasets directly.
-
+You can find the datasets and pre-trained models in [model zoo section](#model-zoo).
 
 ### Training
 To do image deblurring, data augmentation, and blur generation, you first need to train the blur encoding network (The F function in the paper). This is the only network that you need to train.
 
-To train the network, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
+To train the network, first, create an lmdb dataset using `scripts/create_lmdb.py`, for example:
+```sh
+python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_sharp --name train_sharp_wval --save_path ../datasets/REDS/train_sharp_wval.lmdb
+python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_blur --name train_blur_wval --save_path ../datasets/REDS/train_blur_wval.lmdb
 ```
-python train.py -opt path_to_yaml_file
+where `H, C, W` are the shape of the images (note that all images in the dataset must have the same shape), `img_folder` is the folder that contains the images, `name` is the name of the dataset, and `save_path` is the save destination (`save_path` must end with `.lmdb`). Your dataset must be organized as follow (name of folders and images can be different):
+    img_folder
+    ├── 000
+    ├──── 00000000.png
+    ├──── 00000001.png
+    ├──── ...
+    ├── 001
+    ├──── 00000000.png
+    ├──── 00000001.png
+    ├──── ...
+
+
+When the script finished, two folders `train_sharp_wval.lmdb` and `train_blur_wval.lmdb` will be created in `./REDS`.
+
+After creating the dataset, use the following script to train the model:
+```
+python train.py -opt options/kernel_encoding/GOPRO/woVAE.yml
 ```
 
-where `path_to_yaml_file` is the path to yaml file that contains training configurations. You can find some default configurations in `options` folder. Checkpoints and logs will be saved in `../experiments/modelName`
+where `path_to_yaml_file` is the path to yaml file that contains training configurations. You can find some default configurations in `options` folder. Checkpoints and logs will be saved in `experiments/modelName`. You can change the configurations (learning rate, hyper-parameters, network structure, etc) in the yaml file.
 
 ### Testing
 #### Data augmentation
-To augment a given dataset, first, create an lmdb dataset using `scripts/create_lmdb.py`. Then using the following script:
+To augment a given dataset, first, create an lmdb dataset using `scripts/create_lmdb.py` as before. Then use the following script:
 ```
 python data_augmentation.py --target_H=720 --target_W=1280 \
 			    --source_H=720 --source_W=1280\
 			    --augmented_H=256 --augmented_W=256\
-                            --model_path=experiments/pretrained/GOPRO_woVAE.pth \
-                            --source_LQ_root=datasets/GOPRO/test_blur.lmdb \
-                            --source_HQ_root=datasets/GOPRO/test_sharp.lmdb \
-			    --target_HQ_root=datasets/GOPRO/test_sharp.lmdb \
+                            --source_LQ_root=datasets/GOPRO/GOPRO_test_blur.lmdb \
+                            --source_HQ_root=datasets/GOPRO/GOPRO_test_sharp.lmdb \
+			    --target_HQ_root=datasets/GOPRO/REDS_test_sharp.lmdb \
                             --save_path=results/GOPRO_augmented \
                             --num_images=10 \
-                            --yml_path=options/GOPRO/woVAE.yml
+                            --yml_path=options/data_augmentation/default.yml
 ```
-`augmented_H` and `augmented_W` is the desired shape of the augmented images, `source_LQ_root` and `source_HQ_root` is the path of the lmdb folders that were created before. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration. Results will be saved in `save_path`.
+`(target_H, target_W), (source_H, source_W), (augmented_H, augmented_W)` are the desired shapes of the target images, source images, and augmented images respectively. `source_LQ_root`, `source_HQ_root`, and `target_HQ_root` are the paths of the lmdb datasets that were created before. `num_images` is the size of the augmented dataset. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration file. Results will be saved in `save_path`.
 
 ![Data augmentation examples](imgs/results/augmentation.jpg)
 
 #### Generate novel blur kernels
 To generate a blur image given a sharp image, use the following command:
 ```sh
-python generate_blur.py --model_path=experiments/pretrained/GOPRO_wVAE.pth \
-		        --yml_path=options/GOPRO/wVAE.yml \
-		        --image_path=imgs/sample_sharp.png \
+python generate_blur.py --yml_path=options/generate_blur/default.yml \
+		        --image_path=imgs/sharp_imgs/mushishi.png \
 			--save_path='blur.png'
 ```
-**Note**: This only works with models that were trained with `--VAE` flag.
+Where `model_path` is the path of the pretrained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here are some expected output:
 ![kernel generating examples](imgs/results/generate_blur.jpg)
+**Note**: This only works with models that were trained with `--VAE` flag.
 
 #### Generic Deblurring
 To deblur a blurry image, use the following command:
 ```sh
-python generic_deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/deblur.yml --save_path res.png
+python generic_deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/generic_deblur/default.yml --save_path ./res.png
 ```
+Where `image_path` is the path of the blurry image. `yml_path` is the path of the configuration file. The deblurred image will be saved to `save_path`.
 
 ![Image deblurring examples](imgs/results/general_deblurring.jpg)
 
@@ -123,9 +129,9 @@ python generic_deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path option
 [mapping]: https://drive.google.com/uc?id=14R6iHGf5iuVx3DMNsACAl7eBr7Vdpd0k
 [synthesis]: https://drive.google.com/uc?id=1TCViX1YpQyRsklTVYEJwdbmK91vklCo8
 [pretrained model]: https://drive.google.com/file/d/1PQutd-JboOCOZqmd95XWxWrO8gGEvRcO/view
-First, you need to download the pre-trained styleGAN or styleGAN2 networks. If you want to use styleGAN, download the [mapping] and [synthesis] network, then rename and copy them to `experiments/pretrained/stylegan_mapping.pt` and `experiments/pretrained/stylegan_synthesis.pt` respectively. If you want to use styleGAN2 instead, download the [pretrained model], then rename and copy it to `experiments/pretrained/stylegan2.pt`.
+First, you need to download the pre-trained styleGAN or styleGAN2 networks. If you want to use styleGAN, download the [mapping] and [synthesis] networks, then rename and copy them to `experiments/pretrained/stylegan_mapping.pt` and `experiments/pretrained/stylegan_synthesis.pt` respectively. If you want to use styleGAN2 instead, download the [pretrained model], then rename and copy it to `experiments/pretrained/stylegan2.pt`.
 
-To deblur and blurry image using a latent space as sharp image prior, you can use one of the following commands:
+To deblur a blurry image using styleGAN latent space as the sharp image prior, you can use one of the following commands:
 ```sh
 python domain_specific_deblur.py --input_dir imgs/blur_faces \
 		    --output_dir experiments/domain_specific_deblur/results \
@@ -134,13 +140,12 @@ python domain_specific_deblur.py --input_dir imgs/blur_faces \
 		    --output_dir experiments/domain_specific_deblur/results \
 		    --yml_path options/domain_specific_deblur/stylegan2.yml  # Use latent space of stylegan2
 ```
-Results will be saved in `experiments/domain_specific_deblur/results` folder.
+Results will be saved in `experiments/domain_specific_deblur/results`.
 
 ![PULSE-like Deblurring examples](imgs/results/domain_specific_deblur.jpg)
 
 ## Model Zoo
 Pretrained models can be downloaded here.
-
 
 [REDS]: https://seungjunnah.github.io/Datasets/reds.html
 [GOPRO]: https://seungjunnah.github.io/Datasets/gopro
@@ -166,3 +171,4 @@ The backbone code is borrowed from the DeblurGAN project: https://github.com/Kup
 The stylegan code is borrowed from the PULSE project: https://github.com/adamian98/pulse
 
 The stylegan2 code is borrowed from https://github.com/rosinality/stylegan2-pytorch
+
