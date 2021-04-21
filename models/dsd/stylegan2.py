@@ -2,7 +2,8 @@ import math
 import random
 
 import torch
-from models.dsd.op import FusedLeakyReLU, fused_leaky_relu, upfirdn2d
+from models.dsd.op.fused_act import FusedLeakyReLU, fused_leaky_relu
+from models.dsd.op.upfirdn2d import upfirdn2d
 from torch import nn
 from torch.nn import functional as F
 
@@ -618,3 +619,4 @@ class Discriminator(nn.Module):
         out = self.final_linear(out)
 
         return out
+
