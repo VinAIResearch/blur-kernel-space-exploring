@@ -12,7 +12,7 @@ class DSDStyleGAN(DSD):
 
     def load_synthesis_network(self):
         self.synthesis = G_synthesis().cuda()
-        self.synthesis.load_state_dict(torch.load("experiments/pretrained/stylegan_synthesis.pt"), strict=True)
+        self.synthesis.load_state_dict(torch.load("experiments/pretrained/stylegan_synthesis.pt"))
         for v in self.synthesis.parameters():
             v.requires_grad = False
 
