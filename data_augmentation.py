@@ -5,6 +5,7 @@ import os.path as osp
 import random
 
 import cv2
+import yaml
 import data.util as data_util
 import lmdb
 import numpy as np
@@ -36,7 +37,6 @@ def main():
         "--augmented_W", action="store", help="desired width of the augmented images", type=int, required=True
     )
 
-    parser.add_argument("--model_path", action="store", help="model path", type=str, default=None)
     parser.add_argument(
         "--source_LQ_root", action="store", help="source low-quality dataroot", type=str, required=True
     )
@@ -54,7 +54,6 @@ def main():
 
     args = parser.parse_args()
 
-    model_path = args.model_path
     source_LQ_root = args.source_LQ_root
     source_HQ_root = args.source_HQ_root
     target_HQ_root = args.target_HQ_root
@@ -76,11 +75,13 @@ def main():
     logger.info("augmented height: {}".format(augmented_H))
     logger.info("augmented width: {}".format(augmented_W))
     logger.info("Number of augmented images: {}".format(num_images))
-    logger.info("model path: {}".format(model_path))
 
     # Initializing mode
     logger.info("Loading model...")
-    opt = options.parse(yml_path)["KernelWizard"]
+    with open(yml_path, 'r') as f:
+        print(yml_path)
+        opt = yaml.load(f)['KernelWizard']
+    model_path = opt['pretrained']
     model = KernelWizard(opt)
     model.eval()
     model.load_state_dict(torch.load(model_path))

@@ -1,4 +1,5 @@
 import argparse
+import yaml
 
 import cv2
 import numpy as np
@@ -14,18 +15,18 @@ def main():
     parser = argparse.ArgumentParser(description="Kernel extractor testing")
 
     parser.add_argument("--image_path", action="store", help="image path", type=str, required=True)
-    parser.add_argument("--model_path", action="store", help="model path", type=str, required=True)
     parser.add_argument("--yml_path", action="store", help="yml path", type=str, required=True)
     parser.add_argument("--save_path", action="store", help="save path", type=str, default="blur.png")
 
     args = parser.parse_args()
 
-    model_path = args.model_path
     image_path = args.image_path
     yml_path = args.yml_path
 
     # Initializing mode
-    opt = options.parse(yml_path)["KernelWizard"]
+    with open(yml_path, 'r') as f:
+        opt = yaml.load(f)["KernelWizard"]
+        model_path = opt['pretrained']
     model = KernelWizard(opt)
     model.eval()
     model.load_state_dict(torch.load(model_path))
