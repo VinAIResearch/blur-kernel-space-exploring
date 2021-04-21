@@ -67,6 +67,8 @@ python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_sharp --nam
 python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_blur --name train_blur_wval --save_path ../datasets/REDS/train_blur_wval.lmdb
 ```
 where `H, C, W` are the shape of the images (note that all images in the dataset must have the same shape), `img_folder` is the folder that contains the images, `name` is the name of the dataset, and `save_path` is the save destination (`save_path` must end with `.lmdb`). Your dataset must be organized as follow (name of folders and images can be different):
+
+```
     img_folder
     ├── 000
     ├──── 00000000.png
@@ -76,6 +78,7 @@ where `H, C, W` are the shape of the images (note that all images in the dataset
     ├──── 00000000.png
     ├──── 00000001.png
     ├──── ...
+```
 
 
 When the script finished, two folders `train_sharp_wval.lmdb` and `train_blur_wval.lmdb` will be created in `./REDS`.
