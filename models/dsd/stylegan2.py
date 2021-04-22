@@ -619,4 +619,3 @@ class Discriminator(nn.Module):
         out = self.final_linear(out)
 
         return out
-
