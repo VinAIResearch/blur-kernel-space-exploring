@@ -41,17 +41,18 @@ Please CITE our paper whenever this repository is used to help produce published
 git clone https://github.com/VinAIResearch/blur-kernel-space-exploring.git
 cd blur-kernel-space-exploring
 
+
 conda create -n BlurKernelSpace -y python=3.7
 conda activate BlurKernelSpace
 conda install --file requirements.txt
 ```
 
 ### Using the pre-trained model
-To deblur an image using a pre-trained model, first, download the pretrained model in [model zoo section](#model-zoo). In the yaml file, change the value of `KernelWizard/pretrained` to the path of the downloaded file. Then use the following command:
+To deblur an image using a pre-trained model, first, download the pre-trained model in [model zoo section](#model-zoo). In the yaml file, change the value of `KernelWizard/pretrained` to the path of the downloaded file. Then use the following command:
 ``` sh
 python generic_deblur.py --image_path=imgs/blur_imgs/blur1.png --yml_path options/generic_deblur/default.yml --save_path ./sharp01.png
 ```
-The model will deblur the image given in `image_path` and save the result to `./sharp01.png`. You can also change number of iterations, learning rates, and the network structure in the yaml file.
+The model will deblur the image given in `image_path` and save the result to `./sharp01.png`. You can also change the number of iterations, learning rates, and the network structure in the yaml file.
 
 
 ## Training and evaluation
@@ -66,7 +67,7 @@ To train the network, first, create an lmdb dataset using `scripts/create_lmdb.p
 python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_sharp --name train_sharp_wval --save_path ../datasets/REDS/train_sharp_wval.lmdb
 python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_blur --name train_blur_wval --save_path ../datasets/REDS/train_blur_wval.lmdb
 ```
-where `H, C, W` are the shape of the images (note that all images in the dataset must have the same shape), `img_folder` is the folder that contains the images, `name` is the name of the dataset, and `save_path` is the save destination (`save_path` must end with `.lmdb`). Your dataset must be organized as follow (name of folders and images can be different):
+where `(H, C, W)` is the shape of the images (note that all images in the dataset must have the same shape), `img_folder` is the folder that contains the images, `name` is the name of the dataset, and `save_path` is the save destination (`save_path` must end with `.lmdb`). Your dataset must be organized as follow (name of folders and images can be different):
 
 ```
     img_folder
@@ -88,7 +89,7 @@ After creating the dataset, use the following script to train the model:
 python train.py -opt options/kernel_encoding/GOPRO/woVAE.yml
 ```
 
-where `path_to_yaml_file` is the path to yaml file that contains training configurations. You can find some default configurations in `options` folder. Checkpoints and logs will be saved in `experiments/modelName`. You can change the configurations (learning rate, hyper-parameters, network structure, etc) in the yaml file.
+where `path_to_yaml_file` is the path to yaml file that contains training configurations. You can find some default configurations in the `options` folder. Checkpoints and logs will be saved in `experiments/modelName`. You can change the configurations (learning rate, hyper-parameters, network structure, etc) in the yaml file.
 
 ### Testing
 #### Data augmentation
@@ -99,7 +100,7 @@ python data_augmentation.py --target_H=720 --target_W=1280 \
 			    --augmented_H=256 --augmented_W=256\
                             --source_LQ_root=datasets/GOPRO/GOPRO_test_blur.lmdb \
                             --source_HQ_root=datasets/GOPRO/GOPRO_test_sharp.lmdb \
-			    --target_HQ_root=datasets/GOPRO/REDS_test_sharp.lmdb \
+			    --target_HQ_root=datasets/REDS/test_sharp.lmdb \
                             --save_path=results/GOPRO_augmented \
                             --num_images=10 \
                             --yml_path=options/data_augmentation/default.yml
@@ -115,9 +116,9 @@ python generate_blur.py --yml_path=options/generate_blur/default.yml \
 		        --image_path=imgs/sharp_imgs/mushishi.png \
 			--save_path='blur.png'
 ```
-Where `model_path` is the path of the pretrained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here are some expected output:
+Where `model_path` is the path of the pre-trained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here are some expected output:
 ![kernel generating examples](imgs/results/generate_blur.jpg)
-**Note**: This only works with models that were trained with `--VAE` flag.
+**Note**: This only works with models that were trained with `--VAE` flag. The size of input images must be divisible by 16 and greater than 128.
 
 #### Generic Deblurring
 To deblur a blurry image, use the following command:
@@ -171,7 +172,8 @@ The training code is borrowed from the EDVR project: https://github.com/xinntao/
 
 The backbone code is borrowed from the DeblurGAN project: https://github.com/KupynOrest/DeblurGAN
 
-The stylegan code is borrowed from the PULSE project: https://github.com/adamian98/pulse
+The styleGAN code is borrowed from the PULSE project: https://github.com/adamian98/pulse
 
 The stylegan2 code is borrowed from https://github.com/rosinality/stylegan2-pytorch
+
 
