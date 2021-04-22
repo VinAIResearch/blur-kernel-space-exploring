@@ -5,13 +5,12 @@ import os.path as osp
 import random
 
 import cv2
-import yaml
 import data.util as data_util
 import lmdb
 import numpy as np
-import options.options as options
 import torch
 import utils.util as util
+import yaml
 from models.kernel_encoding.kernel_wizard import KernelWizard
 
 
@@ -78,10 +77,10 @@ def main():
 
     # Initializing mode
     logger.info("Loading model...")
-    with open(yml_path, 'r') as f:
+    with open(yml_path, "r") as f:
         print(yml_path)
-        opt = yaml.load(f)['KernelWizard']
-    model_path = opt['pretrained']
+        opt = yaml.load(f)["KernelWizard"]
+    model_path = opt["pretrained"]
     model = KernelWizard(opt)
     model.eval()
     model.load_state_dict(torch.load(model_path))

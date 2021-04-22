@@ -1,6 +1,7 @@
 import argparse
 import os
 import os.path as osp
+
 import requests
 
 
@@ -10,11 +11,11 @@ def download_file_from_google_drive(file_id, destination):
 
     session = requests.Session()
 
-    response = session.get(URL, params={'id': file_id}, stream=True)
+    response = session.get(URL, params={"id": file_id}, stream=True)
     token = get_confirm_token(response)
 
     if token:
-        params = {'id': file_id, 'confirm': token}
+        params = {"id": file_id, "confirm": token}
         response = session.get(URL, params=params, stream=True)
 
     save_response_content(response, destination)
@@ -22,7 +23,7 @@ def download_file_from_google_drive(file_id, destination):
 
 def get_confirm_token(response):
     for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
+        if key.startswith("download_warning"):
             return value
 
     return None
@@ -37,7 +38,7 @@ def save_response_content(response, destination):
                 f.write(chunk)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     dataset_ids = {
         "GOPRO_Large": "1H0PIXvJH4c40pk7ou6nAwoxuR4Qh_Sa2",
         "train_sharp": "1YLksKtMhd2mWyVSkvhDaDLWSc1qYNCz-",
@@ -60,12 +61,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.REDS_train_sharp:
-        download_file_from_google_drive(dataset_ids['train_sharp'], 'REDS/train_sharp.zip')
+        download_file_from_google_drive(dataset_ids["train_sharp"], "REDS/train_sharp.zip")
     if args.REDS_train_blur:
-        download_file_from_google_drive(dataset_ids['train_blur'], 'REDS/train_blur.zip')
+        download_file_from_google_drive(dataset_ids["train_blur"], "REDS/train_blur.zip")
     if args.REDS_val_sharp:
-        download_file_from_google_drive(dataset_ids['val_sharp'], 'REDS/val_sharp.zip')
+        download_file_from_google_drive(dataset_ids["val_sharp"], "REDS/val_sharp.zip")
     if args.REDS_val_blur:
-        download_file_from_google_drive(dataset_ids['val_blur'], 'REDS/val_blur.zip')
+        download_file_from_google_drive(dataset_ids["val_blur"], "REDS/val_blur.zip")
     if args.GOPRO:
-        download_file_from_google_drive(dataset_ids['GOPRO_Large'], 'GOPRO/GOPRO.zip')
+        download_file_from_google_drive(dataset_ids["GOPRO_Large"], "GOPRO/GOPRO.zip")

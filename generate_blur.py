@@ -1,11 +1,10 @@
 import argparse
-import yaml
 
 import cv2
 import numpy as np
-import options.options as options
 import torch
 import utils.util as util
+import yaml
 from models.kernel_encoding.kernel_wizard import KernelWizard
 
 
@@ -24,9 +23,9 @@ def main():
     yml_path = args.yml_path
 
     # Initializing mode
-    with open(yml_path, 'r') as f:
+    with open(yml_path, "r") as f:
         opt = yaml.load(f)["KernelWizard"]
-        model_path = opt['pretrained']
+        model_path = opt["pretrained"]
     model = KernelWizard(opt)
     model.eval()
     model.load_state_dict(torch.load(model_path))
