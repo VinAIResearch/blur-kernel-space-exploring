@@ -89,7 +89,7 @@ After creating the dataset, use the following script to train the model:
 python train.py -opt options/kernel_encoding/GOPRO/woVAE.yml
 ```
 
-where `path_to_yaml_file` is the path to yaml file that contains training configurations. You can find some default configurations in the `options` folder. Checkpoints and logs will be saved in `experiments/modelName`. You can change the configurations (learning rate, hyper-parameters, network structure, etc) in the yaml file.
+where `opt` is the path to yaml file that contains training configurations. You can find some default configurations in the `options` folder. Checkpoints and logs will be saved in `experiments/modelName`. You can change the configurations (learning rate, hyper-parameters, network structure, etc) in the yaml file.
 
 ### Testing
 #### Data augmentation
