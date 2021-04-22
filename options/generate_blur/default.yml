@@ -3,14 +3,14 @@ gpu_ids: [0]
 
 #### network structures
 KernelWizard:
-  pretrained: experiments/pretrained/GOPRO_woVAE.pth
+  pretrained: experiments/pretrained/GOPRO_wVAE.pth
   input_nc: 3
   nf: 64
   front_RBs: 10
   back_RBs: 20
   N_frames: 1
   kernel_dim: 512
-  use_vae: false
+  use_vae: true
   KernelExtractor:
     norm: none
     use_sharp: true
