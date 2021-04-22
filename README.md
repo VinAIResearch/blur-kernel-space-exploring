@@ -111,7 +111,7 @@ To generate a blur image given a sharp image, use the following command:
 ```sh
 python generate_blur.py --yml_path=options/generate_blur/default.yml \
 		        --image_path=imgs/sharp_imgs/mushishi.png \
-			--save_path='blur.png'
+			--num_samples=10
 ```
 where `model_path` is the path of the pre-trained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here is some expected output:
 ![kernel generating examples](imgs/results/generate_blur.jpg)
