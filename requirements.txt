@@ -6,3 +6,4 @@ numpy
 lmdb
 tqdm
 tensorboard >= 1.15.0
+ninja

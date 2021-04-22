@@ -2,11 +2,7 @@ import argparse
 
 import cv2
 import numpy as np
-<<<<<<< HEAD
-import options.options as options
 import os.path as osp
-=======
->>>>>>> b41009519eb50e00347322b0ecfb3bb8b0c9cdaf
 import torch
 import utils.util as util
 import yaml
