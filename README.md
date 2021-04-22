@@ -17,6 +17,8 @@ Detail of the method and experimental results can be found in [our following pap
 ```
 Please CITE our paper whenever this repository is used to help produce published results or incorporated into other software.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1GDvbr4WQUibaEhQVzYPPObV4STn9NAot?usp=sharing)
+
 ## Table of Content 
 
 * [About the Project](#about-the-project)
@@ -48,12 +50,7 @@ conda install --file requirements.txt
 ```
 
 ### Using the pre-trained model
-To deblur an image using a pre-trained model, first, download the pre-trained model in [model zoo section](#model-zoo). In the yaml file, change the value of `KernelWizard/pretrained` to the path of the downloaded file. Then use the following command:
-``` sh
-python generic_deblur.py --image_path=imgs/blur_imgs/blur1.png --yml_path options/generic_deblur/default.yml --save_path ./sharp01.png
-```
-The model will deblur the image given in `image_path` and save the result to `./sharp01.png`. You can also change the number of iterations, learning rates, and the network structure in the yaml file.
-
+To deblur an image using a pre-trained model, first, download the pre-trained model in [model zoo section](#model-zoo). Then follow the instructions in the [testing section](#testing) to do data augmentation, generating blur images, or image deblurring.
 
 ## Training and evaluation
 ### Preparing datasets and pre-trained models
@@ -105,7 +102,7 @@ python data_augmentation.py --target_H=720 --target_W=1280 \
                             --num_images=10 \
                             --yml_path=options/data_augmentation/default.yml
 ```
-`(target_H, target_W), (source_H, source_W), (augmented_H, augmented_W)` are the desired shapes of the target images, source images, and augmented images respectively. `source_LQ_root`, `source_HQ_root`, and `target_HQ_root` are the paths of the lmdb datasets that were created before. `num_images` is the size of the augmented dataset. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration file. Results will be saved in `save_path`.
+`(target_H, target_W)`, `(source_H, source_W)`, and `(augmented_H, augmented_W)` are the desired shapes of the target images, source images, and augmented images respectively. `source_LQ_root`, `source_HQ_root`, and `target_HQ_root` are the paths of the lmdb datasets for the reference blur-sharp pairs and the input sharp images that were created before. `num_images` is the size of the augmented dataset. `model_path` is the path of the trained model. `yml_path` is the path to the model configuration file. Results will be saved in `save_path`.
 
 ![Data augmentation examples](imgs/results/augmentation.jpg)
 
@@ -116,7 +113,7 @@ python generate_blur.py --yml_path=options/generate_blur/default.yml \
 		        --image_path=imgs/sharp_imgs/mushishi.png \
 			--save_path='blur.png'
 ```
-Where `model_path` is the path of the pre-trained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here are some expected output:
+where `model_path` is the path of the pre-trained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here is some expected output:
 ![kernel generating examples](imgs/results/generate_blur.jpg)
 **Note**: This only works with models that were trained with `--VAE` flag. The size of input images must be divisible by 128.
 
@@ -125,7 +122,7 @@ To deblur a blurry image, use the following command:
 ```sh
 python generic_deblur.py --image_path imgs/blur_imgs/blur1.png --yml_path options/generic_deblur/default.yml --save_path ./res.png
 ```
-Where `image_path` is the path of the blurry image. `yml_path` is the path of the configuration file. The deblurred image will be saved to `save_path`.
+where `image_path` is the path of the blurry image. `yml_path` is the path of the configuration file. The deblurred image will be saved to `save_path`.
 
 ![Image deblurring examples](imgs/results/general_deblurring.jpg)
 
@@ -145,6 +142,7 @@ python domain_specific_deblur.py --input_dir imgs/blur_faces \
 		    --yml_path options/domain_specific_deblur/stylegan2.yml  # Use latent space of stylegan2
 ```
 Results will be saved in `experiments/domain_specific_deblur/results`.
+**Note**: Generally, the code still works with images that have the size divisible by 128. However, since our blur kernels are not uniform, the size of the kernel increases as the size of the image increases. 
 
 ![PULSE-like Deblurring examples](imgs/results/domain_specific_deblur.jpg)
 
@@ -175,5 +173,3 @@ The backbone code is borrowed from the DeblurGAN project: https://github.com/Kup
 The styleGAN code is borrowed from the PULSE project: https://github.com/adamian98/pulse
 
 The stylegan2 code is borrowed from https://github.com/rosinality/stylegan2-pytorch
-
-
