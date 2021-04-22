@@ -118,7 +118,7 @@ python generate_blur.py --yml_path=options/generate_blur/default.yml \
 ```
 Where `model_path` is the path of the pre-trained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here are some expected output:
 ![kernel generating examples](imgs/results/generate_blur.jpg)
-**Note**: This only works with models that were trained with `--VAE` flag. The size of input images must be divisible by 16 and greater than 128.
+**Note**: This only works with models that were trained with `--VAE` flag. The size of input images must be divisible by 128.
 
 #### Generic Deblurring
 To deblur a blurry image, use the following command:
