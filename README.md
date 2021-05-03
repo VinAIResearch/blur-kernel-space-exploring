@@ -49,25 +49,23 @@ conda activate BlurKernelSpace
 conda install --file requirements.txt
 ```
 
-### Using the pre-trained model
-To deblur an image using a pre-trained model, first, download the pre-trained model in [model zoo section](#model-zoo). Then follow the instructions in the [testing section](#testing) to do data augmentation, generating blur images, or image deblurring.
-
 ## Training and evaluation
-### Preparing datasets and pre-trained models
-You can find the datasets and pre-trained models in [model zoo section](#model-zoo).
+### Preparing datasets
+You can download the datasets in [model zoo section](#model-zoo).
 
-### Training
-To do image deblurring, data augmentation, and blur generation, you first need to train the blur encoding network (The F function in the paper). This is the only network that you need to train.
-
-To train the network, first, create an lmdb dataset using `scripts/create_lmdb.py`, for example:
-```sh
-python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_sharp --name train_sharp_wval --save_path ../datasets/REDS/train_sharp_wval.lmdb
-python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_blur --name train_blur_wval --save_path ../datasets/REDS/train_blur_wval.lmdb
+To use your customized dataset, your dataset must be organized as follow:
 ```
-where `(H, C, W)` is the shape of the images (note that all images in the dataset must have the same shape), `img_folder` is the folder that contains the images, `name` is the name of the dataset, and `save_path` is the save destination (`save_path` must end with `.lmdb`). Your dataset must be organized as follow (name of folders and images can be different):
-
-```
-    img_folder
+root
+├── blur_imgs
+    ├── 000
+    ├──── 00000000.png
+    ├──── 00000001.png
+    ├──── ...
+    ├── 001
+    ├──── 00000000.png
+    ├──── 00000001.png
+    ├──── ...
+├── sharp_imgs
     ├── 000
     ├──── 00000000.png
     ├──── 00000001.png
@@ -77,16 +75,23 @@ where `(H, C, W)` is the shape of the images (note that all images in the datase
     ├──── 00000001.png
     ├──── ...
 ```
-
+where `root`, `blur_imgs`, and `sharp_imgs` folders can have arbitrary names. For example, let `root, blur_imgs, sharp_imgs` be `REDS, train_blur, train_sharp` respectively (That is, you are using the REDS training set), then use the following scripts to create the lmdb dataset:
+```sh
+python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_sharp --name train_sharp_wval --save_path ../datasets/REDS/train_sharp_wval.lmdb
+python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_blur --name train_blur_wval --save_path ../datasets/REDS/train_blur_wval.lmdb
+```
+where `(H, C, W)` is the shape of the images (note that all images in the dataset must have the same shape), `img_folder` is the folder that contains the images, `name` is the name of the dataset, and `save_path` is the save destination (`save_path` must end with `.lmdb`).
 
 When the script finished, two folders `train_sharp_wval.lmdb` and `train_blur_wval.lmdb` will be created in `./REDS`.
 
-After creating the dataset, use the following script to train the model:
+
+### Training
+To do image deblurring, data augmentation, and blur generation, you first need to train the blur encoding network (The F function in the paper). This is the only network that you need to train. After creating the dataset, change the value of `dataroot_HQ` and `dataroot_LQ` in `options/kernel_encoding/REDS/woVAE.yml` to the paths of the sharp and blur lmdb datasets that created before, then use the following script to train the model:
 ```
-python train.py -opt options/kernel_encoding/GOPRO/woVAE.yml
+python train.py -opt options/kernel_encoding/REDS/woVAE.yml
 ```
 
-where `opt` is the path to yaml file that contains training configurations. You can find some default configurations in the `options` folder. Checkpoints and logs will be saved in `experiments/modelName`. You can change the configurations (learning rate, hyper-parameters, network structure, etc) in the yaml file.
+where `opt` is the path to yaml file that contains training configurations. You can find some default configurations in the `options` folder. Checkpoints, training states, and logs will be saved in `experiments/modelName`. You can change the configurations (learning rate, hyper-parameters, network structure, etc) in the yaml file.
 
 ### Testing
 #### Data augmentation
@@ -95,9 +100,9 @@ To augment a given dataset, first, create an lmdb dataset using `scripts/create_
 python data_augmentation.py --target_H=720 --target_W=1280 \
 			    --source_H=720 --source_W=1280\
 			    --augmented_H=256 --augmented_W=256\
-                            --source_LQ_root=datasets/GOPRO/GOPRO_test_blur.lmdb \
-                            --source_HQ_root=datasets/GOPRO/GOPRO_test_sharp.lmdb \
-			    --target_HQ_root=datasets/REDS/test_sharp.lmdb \
+                            --source_LQ_root=datasets/REDS/train_blur_wval.lmdb \
+                            --source_HQ_root=datasets/REDS/train_sharp_wval.lmdb \
+			    --target_HQ_root=datasets/REDS/test_sharp_wval.lmdb \
                             --save_path=results/GOPRO_augmented \
                             --num_images=10 \
                             --yml_path=options/data_augmentation/default.yml
@@ -112,6 +117,7 @@ To generate a blur image given a sharp image, use the following command:
 python generate_blur.py --yml_path=options/generate_blur/default.yml \
 		        --image_path=imgs/sharp_imgs/mushishi.png \
 			--num_samples=10
+			--save_path=./res.png
 ```
 where `model_path` is the path of the pre-trained model, `yml_path` is the path of the configuration file. `image_path` is the path of the sharp image. After running the script, a blur image corresponding to the sharp image will be saved in `save_path`. Here is some expected output:
 ![kernel generating examples](imgs/results/generate_blur.jpg)
@@ -147,7 +153,7 @@ Results will be saved in `experiments/domain_specific_deblur/results`.
 ![PULSE-like Deblurring examples](imgs/results/domain_specific_deblur.jpg)
 
 ## Model Zoo
-Pretrained models can be downloaded here.
+Pretrained models and corresponding datasets are provided in the below table. After downloading the datasets and models, follow the instructions in the [testing section](#testing) to do data augmentation, generating blur images, or image deblurring.
 
 [REDS]: https://seungjunnah.github.io/Datasets/reds.html
 [GOPRO]: https://seungjunnah.github.io/Datasets/gopro
