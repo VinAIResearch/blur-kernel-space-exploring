@@ -51,7 +51,7 @@ conda install --file requirements.txt
 
 ## Training and evaluation
 ### Preparing datasets
-You can download the datasets in [model zoo section](#model-zoo).
+You can download the datasets in the [model zoo section](#model-zoo).
 
 To use your customized dataset, your dataset must be organized as follow:
 ```
@@ -82,11 +82,11 @@ python create_lmdb.py --H 720 --W 1280 --C 3 --img_folder REDS/train_blur --name
 ```
 where `(H, C, W)` is the shape of the images (note that all images in the dataset must have the same shape), `img_folder` is the folder that contains the images, `name` is the name of the dataset, and `save_path` is the save destination (`save_path` must end with `.lmdb`).
 
-When the script finished, two folders `train_sharp_wval.lmdb` and `train_blur_wval.lmdb` will be created in `./REDS`.
+When the script is finished, two folders `train_sharp_wval.lmdb` and `train_blur_wval.lmdb` will be created in `./REDS`.
 
 
 ### Training
-To do image deblurring, data augmentation, and blur generation, you first need to train the blur encoding network (The F function in the paper). This is the only network that you need to train. After creating the dataset, change the value of `dataroot_HQ` and `dataroot_LQ` in `options/kernel_encoding/REDS/woVAE.yml` to the paths of the sharp and blur lmdb datasets that created before, then use the following script to train the model:
+To do image deblurring, data augmentation, and blur generation, you first need to train the blur encoding network (The F function in the paper). This is the only network that you need to train. After creating the dataset, change the value of `dataroot_HQ` and `dataroot_LQ` in `options/kernel_encoding/REDS/woVAE.yml` to the paths of the sharp and blur lmdb datasets that were created before, then use the following script to train the model:
 ```
 python train.py -opt options/kernel_encoding/REDS/woVAE.yml
 ```
