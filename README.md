@@ -158,10 +158,10 @@ Pretrained models and corresponding datasets are provided in the below table. Af
 [REDS]: https://seungjunnah.github.io/Datasets/reds.html
 [GOPRO]: https://seungjunnah.github.io/Datasets/gopro
 
-[REDS woVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/REDS_woVAE.pth
-[GOPRO woVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/GOPRO_woVAE.pth
-[GOPRO wVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/GOPRO_wVAE.pth
-[GOPRO + REDS woVAE]: http://public.vinai.io/models/blur-kernel-space-exploring/mix_woVAE.pth
+[REDS woVAE]: https://drive.google.com/file/d/12ZhjXWcYhAZjBnMtF0ai0R5PQydZct61/view?usp=sharing
+[GOPRO woVAE]: https://drive.google.com/file/d/1WrVALP-woJgtiZyvQ7NOkaZssHbHwKYn/view?usp=sharing
+[GOPRO wVAE]: https://drive.google.com/file/d/1QMUY8mxUMgEJty2Gk7UY0WYmyyYRY7vS/view?usp=sharing
+[GOPRO + REDS woVAE]: https://drive.google.com/file/d/169R0hEs3rNeloj-m1rGS4YjW38pu-LFD/view?usp=sharing
 
 |Model name              | dataset(s)      | status                   |
 |:-----------------------|:---------------:|-------------------------:|
