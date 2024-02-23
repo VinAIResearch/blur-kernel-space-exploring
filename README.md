@@ -158,9 +158,9 @@ Pretrained models and corresponding datasets are provided in the below table. Af
 [REDS]: https://seungjunnah.github.io/Datasets/reds.html
 [GOPRO]: https://seungjunnah.github.io/Datasets/gopro
 
-[REDS woVAE]: https://drive.google.com/file/d/12ZhjXWcYhAZjBnMtF0ai0R5PQydZct61/view?usp=sharing
+[REDS woVAE]: https://drive.google.com/file/d/1QSRbxvZPZoPy2bp-KOCbTk8l49RX-zj9/view?usp=sharing
 [GOPRO woVAE]: https://drive.google.com/file/d/1WrVALP-woJgtiZyvQ7NOkaZssHbHwKYn/view?usp=sharing
-[GOPRO wVAE]: https://drive.google.com/file/d/1QMUY8mxUMgEJty2Gk7UY0WYmyyYRY7vS/view?usp=sharing
+[GOPRO wVAE]: https://drive.google.com/file/d/1xUvRmusWa0PaFej1Kxu11Te33v0JvEeL/view?usp=sharing
 [GOPRO + REDS woVAE]: https://drive.google.com/file/d/169R0hEs3rNeloj-m1rGS4YjW38pu-LFD/view?usp=sharing
 
 |Model name              | dataset(s)      | status                   |
